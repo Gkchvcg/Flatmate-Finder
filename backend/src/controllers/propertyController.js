@@ -26,7 +26,7 @@ const getProperties = async (req, res, next) => {
     }
 
     const properties = await Property.find(query)
-      .populate('creator', 'name email phone')
+      .populate('creator', 'name email phone interests hobbies')
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
@@ -49,7 +49,7 @@ const getProperties = async (req, res, next) => {
 // @access  Public
 const getProperty = async (req, res, next) => {
   try {
-    const property = await Property.findById(req.params.id).populate('creator', 'name email phone');
+    const property = await Property.findById(req.params.id).populate('creator', 'name email phone interests hobbies');
     if (!property) {
       res.status(404);
       throw new Error('Property not found');

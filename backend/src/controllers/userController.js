@@ -17,13 +17,15 @@ const getMe = async (req, res, next) => {
 // @access  Private
 const updateMe = async (req, res, next) => {
   try {
-    const { name, phone, preferences } = req.body;
+    const { name, phone, preferences, interests, hobbies } = req.body;
     
     // Only allow updating specific fields
     const updateFields = {};
     if (name) updateFields.name = name;
     if (phone) updateFields.phone = phone;
     if (preferences) updateFields.preferences = preferences;
+    if (interests) updateFields.interests = interests;
+    if (hobbies) updateFields.hobbies = hobbies;
 
     const user = await User.findByIdAndUpdate(req.user.id, updateFields, {
       new: true,

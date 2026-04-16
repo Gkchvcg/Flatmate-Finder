@@ -24,12 +24,20 @@ const PropertyCard = ({ property, onInterest, interestStatus }) => {
         </p>
       </div>
       
-      <div className="property-footer">
-        <span style={{fontSize:'0.875rem', color:'var(--text-muted)'}}>Posted by {property.creator?.name || 'User'}</span>
+      <div className="property-footer" style={{ alignItems: 'flex-start' }}>
+        <div style={{display: 'flex', flexDirection: 'column'}}>
+          <span style={{fontSize:'0.875rem', color:'var(--text-muted)'}}>Posted by {property.creator?.name || 'User'}</span>
+          {property.creator?.interests && property.creator.interests.length > 0 && (
+            <span style={{fontSize:'0.75rem', color:'var(--text-muted)', marginTop:'0.25rem'}}>Interests: {property.creator.interests.join(', ')}</span>
+          )}
+          {property.creator?.hobbies && property.creator.hobbies.length > 0 && (
+            <span style={{fontSize:'0.75rem', color:'var(--text-muted)', marginTop:'0.25rem'}}>Hobbies: {property.creator.hobbies.join(', ')}</span>
+          )}
+        </div>
         {onInterest && (
           <button 
             className={`btn ${interestStatus ? 'btn-outline' : 'btn-primary'}`}
-            style={{display:'flex', alignItems:'center', gap:'4px', padding:'0.25rem 0.75rem'}}
+            style={{display:'flex', alignItems:'center', gap:'4px', padding:'0.25rem 0.75rem', marginTop: property.creator?.interests?.length || property.creator?.hobbies?.length ? '0' : 'auto'}}
             onClick={() => onInterest(property._id)}
             disabled={!!interestStatus}
           >

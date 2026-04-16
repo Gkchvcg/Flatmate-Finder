@@ -69,7 +69,7 @@ const getReceivedInterests = async (req, res, next) => {
 
     // 2. Find all interests linked to those properties
     const interests = await Interest.find({ propertyId: { $in: propertyIds } })
-        .populate('userId', 'name email phone')
+        .populate('userId', 'name email phone interests hobbies')
         .populate('propertyId', 'title city rent');
         
     res.status(200).json(interests);

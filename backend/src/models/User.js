@@ -19,6 +19,14 @@ const userSchema = mongoose.Schema(
     phone: {
       type: String,
     },
+    interests: {
+      type: [String],
+      default: [],
+    },
+    hobbies: {
+      type: [String],
+      default: [],
+    },
     preferences: {
       city: String,
       budget: Number,
