@@ -48,9 +48,9 @@ const Dashboard = () => {
     fetchProperties();
   };
 
-  const handleInterest = async (propertyId) => {
+  const handleInterest = async (propertyId, message) => {
     try {
-      await api.post('/interests', { propertyId });
+      await api.post('/interests', { propertyId, message });
       setInterestedProperties(prev => ({ ...prev, [propertyId]: 'Pending' }));
       alert('Interest sent to owner successfully!');
     } catch (err) {

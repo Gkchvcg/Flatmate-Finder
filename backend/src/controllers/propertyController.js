@@ -1,4 +1,6 @@
 import Property from '../models/Property.js';
+import User from '../models/User.js';
+import { calculateCompatibility } from '../utils/compatibility.js';
 
 // @desc    Get all properties (with filtering & pagination)
 // @route   GET /api/properties
@@ -26,15 +28,33 @@ const getProperties = async (req, res, next) => {
     }
 
     const properties = await Property.find(query)
-      .populate('creator', 'name email phone interests hobbies')
+      .populate('creator', 'name email phone interests hobbies gender sleepSchedule smokingHabit drinkingHabit cleanlinessLevel preferredArea occupation')
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
 
     const total = await Property.countDocuments(query);
 
+    // Add compatibility matching scores if user is logged in
+    let propertiesWithScores = properties;
+    if (req.user) {
+      // Get the full profile of the logged-in user to ensure we have all compatibility fields
+      const currentUser = await User.findById(req.user.id);
+      
+      propertiesWithScores = properties.map(property => {
+        const propertyObj = property.toObject();
+        // Skip match calculation if user is viewing their own property
+        if (property.creator._id.toString() === req.user.id) {
+          propertyObj.matchScore = 100;
+        } else {
+          propertyObj.matchScore = calculateCompatibility(currentUser, property.creator, property);
+        }
+        return propertyObj;
+      });
+    }
+
     res.status(200).json({
-      properties,
+      properties: propertiesWithScores,
       totalPages: Math.ceil(total / limit),
       currentPage: Number(page),
       total,
@@ -49,11 +69,22 @@ const getProperties = async (req, res, next) => {
 // @access  Public
 const getProperty = async (req, res, next) => {
   try {
-    const property = await Property.findById(req.params.id).populate('creator', 'name email phone interests hobbies');
+    const property = await Property.findById(req.params.id).populate('creator', 'name email phone interests hobbies gender sleepSchedule smokingHabit drinkingHabit cleanlinessLevel preferredArea occupation');
     if (!property) {
       res.status(404);
       throw new Error('Property not found');
     }
+    if (req.user) {
+      const currentUser = await User.findById(req.user.id);
+      const propertyObj = property.toObject();
+      if (property.creator._id.toString() === req.user.id) {
+        propertyObj.matchScore = 100;
+      } else {
+        propertyObj.matchScore = calculateCompatibility(currentUser, property.creator, property);
+      }
+      return res.status(200).json(propertyObj);
+    }
+
     res.status(200).json(property);
   } catch (error) {
     next(error);
@@ -67,7 +98,7 @@ const createProperty = async (req, res, next) => {
   try {
     const {
       title, description, city, area, rent, deposit, amenities, availabilityDate,
-      preferredGender, preferredSleepSchedule, smokingAllowed, drinkingAllowed, preferredCleanliness
+      preferredGender, preferredSleepSchedule, smokingAllowed, drinkingAllowed, preferredCleanliness, preferredOccupation, images
     } = req.body;
 
     if (!title || !description || !city || !rent) {
@@ -89,7 +120,9 @@ const createProperty = async (req, res, next) => {
       preferredSleepSchedule,
       smokingAllowed,
       drinkingAllowed,
-      preferredCleanliness
+      preferredCleanliness,
+      preferredOccupation,
+      images: images || [],
     });
 
     res.status(201).json(property);

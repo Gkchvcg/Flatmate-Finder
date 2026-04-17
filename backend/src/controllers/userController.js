@@ -18,7 +18,7 @@ export const getMe = async (req, res, next) => {
 // @access  Private
 export const updateMe = async (req, res, next) => {
   try {
-    const { name, phone, preferences, interests, hobbies, gender, sleepSchedule, smokingHabit, drinkingHabit, cleanlinessLevel, preferredArea } = req.body;
+    const { name, phone, preferences, interests, hobbies, gender, sleepSchedule, smokingHabit, drinkingHabit, cleanlinessLevel, preferredArea, occupation } = req.body;
 
     // Only allow updating specific fields
     const updateFields = {};
@@ -33,6 +33,7 @@ export const updateMe = async (req, res, next) => {
     if (drinkingHabit !== undefined) updateFields.drinkingHabit = drinkingHabit;
     if (cleanlinessLevel) updateFields.cleanlinessLevel = cleanlinessLevel;
     if (preferredArea) updateFields.preferredArea = preferredArea;
+    if (occupation) updateFields.occupation = occupation;
 
     const user = await User.findByIdAndUpdate(req.user.id, updateFields, {
       new: true,

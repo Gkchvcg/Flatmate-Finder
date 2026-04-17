@@ -1,12 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Home, Users, Shield, Star, MapPin, Phone, Mail, ChevronDown, ArrowRight, Menu, X } from 'lucide-react';
+import { ThemeContext } from '../context/ThemeContext';
+import { Home, Users, Shield, Star, MapPin, Phone, Mail, ChevronDown, ArrowRight, Menu, X, Sun, Moon } from 'lucide-react';
 
 const LandingPage = () => {
   const homeRef = useRef(null);
   const aboutRef = useRef(null);
   const contactRef = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
 
   const scrollTo = (ref) => {
     if (!ref.current) return;
@@ -42,6 +45,14 @@ const LandingPage = () => {
             {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
           <div className="landing-nav-actions">
+            <button 
+              onClick={toggleTheme} 
+              className="lnd-btn lnd-btn-ghost" 
+              style={{ padding: '0.5rem', minWidth: 'auto', marginRight: '0.5rem' }}
+              aria-label="Toggle Theme"
+            >
+              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
             <Link to="/login" className="lnd-btn lnd-btn-outline">Login</Link>
             <Link to="/register" className="lnd-btn lnd-btn-primary">Register</Link>
           </div>

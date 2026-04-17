@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -14,7 +15,8 @@ import Profile from './pages/Profile';
 
 function App() {
   return (
-    <AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
       <Router>
         <Routes>
           {/* Public landing page — has its own navbar */}
@@ -89,6 +91,7 @@ function App() {
         </Routes>
       </Router>
     </AuthProvider>
+  </ThemeProvider>
   );
 }
 

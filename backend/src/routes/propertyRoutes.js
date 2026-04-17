@@ -1,16 +1,16 @@
 import express from 'express';
 const router = express.Router();
 import propertyController from '../controllers/propertyController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { protect, optionalProtect } from '../middleware/authMiddleware.js';
 
 const { getProperties, getProperty, createProperty, updateProperty, deleteProperty } = propertyController;
 
 router.route('/')
-  .get(getProperties)
+  .get(optionalProtect, getProperties)
   .post(protect, createProperty);
 
 router.route('/:id')
-  .get(getProperty)
+  .get(optionalProtect, getProperty)
   .put(protect, updateProperty)
   .delete(protect, deleteProperty);
 

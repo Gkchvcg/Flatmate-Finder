@@ -1,10 +1,10 @@
-const dotenv = require('dotenv');
-const connectDB = require('../backend/src/config/db');
-const { errorHandler } = require('../backend/src/middleware/errorMiddleware');
-const app = require('../backend/src/app');
+import dotenv from 'dotenv';
+import connectDB from '../backend/src/config/db.js';
+import { errorHandler } from '../backend/src/middleware/errorMiddleware.js';
+import app from '../backend/src/app.js';
 
 dotenv.config();
 connectDB();
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

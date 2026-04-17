@@ -3,19 +3,59 @@
 :root {
   --primary-color: #4F46E5;
   --primary-hover: #4338CA;
-  --bg-color: #F9FAFB;
-  --card-bg: #FFFFFF;
-  --text-main: #111827;
-  --text-muted: #6B7280;
-  --border-color: #E5E7EB;
+  --bg-color: #F8FAFC;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --text-main: #1E293B;
+  --text-muted: #64748B;
+  --border-color: rgba(226, 232, 240, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
   --danger: #EF4444;
   --success: #10B981;
+}
+
+[data-theme='dark'] {
+  --bg-color: #0F172A;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+  --border-color: rgba(51, 65, 85, 0.8);
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease, color 0.1s ease;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.5;
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+  background-attachment: fixed;
+}
+
+[data-theme='light'] body {
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,95%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,90%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,90%,1) 0, transparent 50%);
+}
+
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
 }
 
 body {

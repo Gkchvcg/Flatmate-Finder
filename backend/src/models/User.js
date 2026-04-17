@@ -69,6 +69,11 @@ const userSchema = mongoose.Schema(
     preferredArea: {
       type: String,
     },
+    occupation: {
+      type: String,
+      enum: ['Student', 'Professional', 'Other'],
+      default: 'Other',
+    },
   },
   {
     timestamps: true,

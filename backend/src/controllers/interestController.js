@@ -8,7 +8,7 @@ import { calculateCompatibility } from '../utils/compatibility.js';
 // @access  Private
 export const createInterest = async (req, res, next) => {
   try {
-    const { propertyId } = req.body;
+    const { propertyId, message } = req.body;
 
     if (!propertyId) {
       res.status(400);
@@ -32,7 +32,8 @@ export const createInterest = async (req, res, next) => {
     try {
         const interest = await Interest.create({
             userId: req.user.id,
-            propertyId
+            propertyId,
+            message
         });
         res.status(201).json(interest);
     } catch(err) {
@@ -75,7 +76,7 @@ export const getReceivedInterests = async (req, res, next) => {
     // 3. Find all interests linked to those properties
     // We need more fields from userId for compatibility check
     const interests = await Interest.find({ propertyId: { $in: propertyIds } })
-        .populate('userId', 'name email phone interests hobbies preferences gender sleepSchedule smokingHabit drinkingHabit cleanlinessLevel preferredArea')
+        .populate('userId', 'name email phone interests hobbies preferences gender sleepSchedule smokingHabit drinkingHabit cleanlinessLevel preferredArea occupation')
         .populate('propertyId', 'title city area rent');
         
     // 4. Calculate compatibility score (checksum) for each interest

@@ -15,6 +15,7 @@ export const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @access  Public
 export const registerUser = async (req, res, next) => {
+  console.log('Register request received:', req.body);
   try {
     const { name, email, password, phone } = req.body;
     const normalizedName = name?.trim();
@@ -52,6 +53,7 @@ export const registerUser = async (req, res, next) => {
     });
 
     if (user) {
+      console.log('User created successfully:', user._id);
       res.status(201).json({
         _id: user.id,
         name: user.name,
@@ -59,10 +61,12 @@ export const registerUser = async (req, res, next) => {
         token: generateToken(user._id),
       });
     } else {
+      console.error('User creation failed: Unknown error');
       res.status(400);
       throw new Error('Invalid user data');
     }
   } catch (error) {
+    console.error('Registration error:', error);
     if (error.code === 11000 && error.keyPattern?.email) {
       res.status(400);
       return next(new Error('User already exists'));
@@ -75,25 +79,34 @@ export const registerUser = async (req, res, next) => {
 // @route   POST /api/auth/login
 // @access  Public
 export const loginUser = async (req, res, next) => {
+  console.log('Login request received:', req.body);
   try {
     const { email, password } = req.body;
     const normalizedEmail = email?.trim().toLowerCase();
 
     // Check for user email
     const user = await User.findOne({ email: normalizedEmail });
+    console.log(`Login attempt for email: ${normalizedEmail}. User found: ${!!user}`);
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      res.json({
-        _id: user.id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user._id),
-      });
-    } else {
-      res.status(400);
-      throw new Error('Invalid credentials');
+    if (user) {
+      const isMatch = await bcrypt.compare(password, user.password);
+      console.log(`Password match result for ${normalizedEmail}: ${isMatch}`);
+      
+      if (isMatch) {
+        return res.json({
+          _id: user.id,
+          name: user.name,
+          email: user.email,
+          token: generateToken(user._id),
+        });
+      }
     }
+
+    console.warn(`Login failed for email: ${normalizedEmail} - Invalid credentials`);
+    res.status(400);
+    throw new Error('Invalid credentials');
   } catch (error) {
+    console.error('Login error:', error);
     next(error);
   }
 };

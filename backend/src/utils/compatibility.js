@@ -8,15 +8,16 @@
 export const calculateCompatibility = (interestedUser, propertyOwner, property) => {
   let score = 0;
   const weights = {
-    budget: 20,
+    budget: 15,
     area: 15,
     gender: 20,
-    sleepSchedule: 15,
+    sleepSchedule: 10,
     habits: 15,
-    cleanliness: 15
+    cleanliness: 10,
+    occupation: 15
   };
 
-  // 1. Budget (20 points)
+  // 1. Budget (15 points)
   if (interestedUser.preferences?.budget && property.rent) {
     const budget = interestedUser.preferences.budget;
     const rent = property.rent;
@@ -41,7 +42,6 @@ export const calculateCompatibility = (interestedUser, propertyOwner, property) 
   }
 
   // 3. Gender (20 points)
-  // Use property preference if set, otherwise owner preference
   const prefGender = property.preferredGender || propertyOwner.preferences?.genderPreference || 'Any';
   let genderMatch = true;
   if (prefGender !== 'Any') {
@@ -49,7 +49,6 @@ export const calculateCompatibility = (interestedUser, propertyOwner, property) 
       genderMatch = false;
     }
   }
-  // Also check if owner matches IU's preference
   if (interestedUser.preferences?.genderPreference && interestedUser.preferences.genderPreference !== 'Any') {
     if (propertyOwner.gender && propertyOwner.gender !== interestedUser.preferences.genderPreference) {
       genderMatch = false;
@@ -57,7 +56,7 @@ export const calculateCompatibility = (interestedUser, propertyOwner, property) 
   }
   if (genderMatch) score += weights.gender;
 
-  // 4. Sleep Schedule (15 points)
+  // 4. Sleep Schedule (10 points)
   const prefSleep = property.preferredSleepSchedule || propertyOwner.sleepSchedule || 'Any';
   if (interestedUser.sleepSchedule && prefSleep !== 'Any') {
     if (interestedUser.sleepSchedule === prefSleep) {
@@ -71,14 +70,12 @@ export const calculateCompatibility = (interestedUser, propertyOwner, property) 
 
   // 5. Habits: Smoking/Drinking (15 points)
   let habitsScore = 0;
-  // Smoking
   const smokingAllowed = property.smokingAllowed !== undefined ? property.smokingAllowed : (propertyOwner.preferences?.smokingDrinking === 'Allowed');
   if (interestedUser.smokingHabit) {
       if (smokingAllowed) habitsScore += 7.5;
   } else {
       habitsScore += 7.5;
   }
-  // Drinking
   const drinkingAllowed = property.drinkingAllowed !== undefined ? property.drinkingAllowed : (propertyOwner.preferences?.smokingDrinking === 'Allowed');
   if (interestedUser.drinkingHabit) {
       if (drinkingAllowed) habitsScore += 7.5;
@@ -87,7 +84,7 @@ export const calculateCompatibility = (interestedUser, propertyOwner, property) 
   }
   score += habitsScore;
 
-  // 6. Cleanliness (15 points)
+  // 6. Cleanliness (10 points)
   const prefClean = property.preferredCleanliness || propertyOwner.cleanlinessLevel || 'Any';
   const cleanlinessMap = { 'Low': 1, 'Medium': 2, 'High': 3 };
   if (interestedUser.cleanlinessLevel && prefClean !== 'Any') {
@@ -96,6 +93,16 @@ export const calculateCompatibility = (interestedUser, propertyOwner, property) 
     else if (diff === 1) score += weights.cleanliness * 0.5;
   } else {
       score += weights.cleanliness * 0.5;
+  }
+
+  // 7. Occupation (15 points)
+  const prefJob = property.preferredOccupation || 'Any';
+  if (prefJob === 'Any') {
+    score += weights.occupation;
+  } else if (interestedUser.occupation && interestedUser.occupation === prefJob) {
+    score += weights.occupation;
+  } else {
+    score += weights.occupation * 0.2; // Small bonus just for existing? Or 0.
   }
 
   return Math.round(score);

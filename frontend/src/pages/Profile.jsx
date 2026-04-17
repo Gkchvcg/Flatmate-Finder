@@ -7,7 +7,7 @@ const Profile = () => {
     const [receivedInterests, setReceivedInterests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
-    const [editForm, setEditForm] = useState({ interests: '', hobbies: '' });
+    const [editForm, setEditForm] = useState({ interests: '', hobbies: '', occupation: 'Other' });
 
     const fetchData = async () => {
         setLoading(true);
@@ -27,7 +27,8 @@ const Profile = () => {
                 drinkingHabit: profileRes.data.drinkingHabit || false,
                 cleanlinessLevel: profileRes.data.cleanlinessLevel || '',
                 preferredArea: profileRes.data.preferredArea || '',
-                budget: profileRes.data.preferences?.budget || ''
+                budget: profileRes.data.preferences?.budget || '',
+                occupation: profileRes.data.occupation || 'Other'
             });
             setMyInterests(sentRes.data);
             setReceivedInterests(receivedRes.data);
@@ -56,6 +57,7 @@ const Profile = () => {
                 drinkingHabit: editForm.drinkingHabit,
                 cleanlinessLevel: editForm.cleanlinessLevel,
                 preferredArea: editForm.preferredArea,
+                occupation: editForm.occupation,
                 preferences: {
                     ...profile.preferences,
                     budget: editForm.budget ? Number(editForm.budget) : profile.preferences?.budget
@@ -135,6 +137,14 @@ const Profile = () => {
                                 <label>Budget</label>
                                 <input type="number" className="form-control" value={editForm.budget} onChange={e => setEditForm({...editForm, budget: e.target.value})} placeholder="Max budget" />
                             </div>
+                            <div className="form-group">
+                                <label>Occupation</label>
+                                <select className="form-control" value={editForm.occupation} onChange={e => setEditForm({...editForm, occupation: e.target.value})}>
+                                    <option value="Student">Student</option>
+                                    <option value="Professional">Professional</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
                         </div>
                         <div className="form-group" style={{marginTop:'1rem'}}>
                             <label>Preferred Area</label>
@@ -165,6 +175,7 @@ const Profile = () => {
                             <p><strong>Cleanliness:</strong> {profile.cleanlinessLevel || 'Not specified'}</p>
                             <p><strong>Budget:</strong> {profile.preferences?.budget || 'Not specified'}</p>
                             <p><strong>Area:</strong> {profile.preferredArea || 'Not specified'}</p>
+                            <p><strong>Occupation:</strong> {profile.occupation || 'Not specified'}</p>
                             <p><strong>Habits:</strong> {[profile.smokingHabit ? 'Smoking' : '', profile.drinkingHabit ? 'Drinking' : ''].filter(Boolean).join(', ') || 'None'}</p>
                         </div>
                     </div>
@@ -187,6 +198,12 @@ const Profile = () => {
                                     <p><strong>{interest.userId?.name}</strong> is interested in <strong>{interest.propertyId?.title}</strong></p>
                                     {interest.userId?.interests?.length > 0 && <p style={{fontSize:'0.875rem', marginTop:'0.25rem', color:'var(--text-color)'}}><strong>Interests:</strong> {interest.userId.interests.join(', ')}</p>}
                                     {interest.userId?.hobbies?.length > 0 && <p style={{fontSize:'0.875rem', marginTop:'0.25rem', color:'var(--text-color)'}}><strong>Hobbies:</strong> {interest.userId.hobbies.join(', ')}</p>}
+                                    <p style={{fontSize:'0.875rem', marginTop:'0.25rem', color:'var(--text-color)'}}><strong>Occupation:</strong> {interest.userId?.occupation || 'Not specified'}</p>
+                                    {interest.message && (
+                                        <div style={{marginTop:'0.75rem', padding:'0.75rem', background:'var(--bg-color)', borderRadius:'0.375rem', fontSize:'0.875rem'}}>
+                                            <strong>Message:</strong> "{interest.message}"
+                                        </div>
+                                    )}
                                     <p style={{fontSize:'0.875rem', color:'var(--text-muted)', margin:'0.5rem 0'}}>Status: <span style={{fontWeight:'bold'}}>{interest.status}</span></p>
                                     
                                     {interest.status === 'Pending' && (

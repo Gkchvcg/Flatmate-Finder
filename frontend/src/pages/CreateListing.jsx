@@ -18,8 +18,11 @@ const CreateListing = () => {
     preferredSleepSchedule: 'Any',
     preferredCleanliness: 'Any',
     smokingAllowed: true,
-    drinkingAllowed: true
+    drinkingAllowed: true,
+    preferredOccupation: 'Any',
+    images: []
   });
+  const [imageUrl, setImageUrl] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -48,7 +51,7 @@ const CreateListing = () => {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '2rem auto', background: 'var(--card-bg)', padding: '2rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+    <div style={{ maxWidth: '600px', margin: '2rem auto', background: 'var(--card-bg)', padding: '2rem', borderRadius: '0.5rem', boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)', backdropFilter: 'blur(12px)', border: '1px solid var(--glass-border)' }}>
       <h1 className="page-title" style={{ marginBottom: '1.5rem' }}>Add a New Property</h1>
       
       <form onSubmit={handleSubmit}>
@@ -116,12 +119,20 @@ const CreateListing = () => {
               </select>
             </div>
             <div className="form-group">
-              <label>Cleanliness</label>
+              <label>Cleanliness Preference</label>
               <select name="preferredCleanliness" className="form-control" value={formData.preferredCleanliness} onChange={handleChange}>
-                <option value="Any">No Preference</option>
-                <option value="High">Very Clean (High)</option>
+                <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
-                <option value="Low">Low / Chilled</option>
+                <option value="High">High</option>
+                <option value="Any">Any</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Preferred Occupation</label>
+              <select name="preferredOccupation" className="form-control" value={formData.preferredOccupation} onChange={handleChange}>
+                <option value="Student">Student</option>
+                <option value="Professional">Professional</option>
+                <option value="Any">Any</option>
               </select>
             </div>
           </div>
@@ -138,7 +149,46 @@ const CreateListing = () => {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary" disabled={loading}>
+        <div style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
+          <h3 style={{ marginBottom: '1rem', fontSize: '1.25rem' }}>Room Photos</h3>
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+            <input 
+              type="text" 
+              className="form-control" 
+              placeholder="Paste image URL here..." 
+              value={imageUrl} 
+              onChange={(e) => setImageUrl(e.target.value)} 
+            />
+            <button 
+              type="button" 
+              className="btn btn-outline" 
+              onClick={() => {
+                if (imageUrl) {
+                  setFormData({ ...formData, images: [...formData.images, imageUrl] });
+                  setImageUrl('');
+                }
+              }}
+            >
+              Add
+            </button>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            {formData.images.map((img, index) => (
+              <div key={index} style={{ position: 'relative', width: '80px', height: '80px' }}>
+                <img src={img} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0.25rem' }} />
+                <button 
+                  type="button" 
+                  style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--danger)', color: '#fff', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  onClick={() => setFormData({ ...formData, images: formData.images.filter((_, i) => i !== index) })}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', padding: '1rem', marginTop: '1rem' }}>
           {loading ? 'Creating...' : 'Create Listing'}
         </button>
       </form>

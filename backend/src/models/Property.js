@@ -67,6 +67,15 @@ const propertySchema = mongoose.Schema(
       enum: ['Low', 'Medium', 'High', 'Any'],
       default: 'Any',
     },
+    preferredOccupation: {
+      type: String,
+      enum: ['Student', 'Professional', 'Any'],
+      default: 'Any',
+    },
+    images: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,
