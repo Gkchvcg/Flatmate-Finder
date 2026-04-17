@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'flatmate-finder-dev-secret';
 
-const protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   let token;
 
   if (
@@ -33,5 +33,3 @@ const protect = async (req, res, next) => {
     next(new Error('Not authorized, no token'));
   }
 };
-
-module.exports = { protect };

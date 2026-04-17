@@ -1,13 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const {
-  getProperties,
-  getProperty,
-  createProperty,
-  updateProperty,
-  deleteProperty,
-} = require('../controllers/propertyController');
-const { protect } = require('../middleware/authMiddleware');
+import propertyController from '../controllers/propertyController.js';
+import { protect } from '../middleware/authMiddleware.js';
+
+const { getProperties, getProperty, createProperty, updateProperty, deleteProperty } = propertyController;
 
 router.route('/')
   .get(getProperties)
@@ -18,4 +14,4 @@ router.route('/:id')
   .put(protect, updateProperty)
   .delete(protect, deleteProperty);
 
-module.exports = router;
+export default router;

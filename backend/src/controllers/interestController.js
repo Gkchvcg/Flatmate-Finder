@@ -1,10 +1,12 @@
-const Interest = require('../models/Interest');
-const Property = require('../models/Property');
+import Interest from '../models/Interest.js';
+import Property from '../models/Property.js';
+import User from '../models/User.js';
+import { calculateCompatibility } from '../utils/compatibility.js';
 
 // @desc    Show interest in a property
 // @route   POST /api/interests
 // @access  Private
-const createInterest = async (req, res, next) => {
+export const createInterest = async (req, res, next) => {
   try {
     const { propertyId } = req.body;
 
@@ -49,7 +51,7 @@ const createInterest = async (req, res, next) => {
 // @desc    Get user's interests (properties they showed interest in)
 // @route   GET /api/interests/me
 // @access  Private
-const getMyInterests = async (req, res, next) => {
+export const getUserInterests = async (req, res, next) => {
   try {
     const interests = await Interest.find({ userId: req.user.id }).populate('propertyId');
     res.status(200).json(interests);
@@ -61,18 +63,33 @@ const getMyInterests = async (req, res, next) => {
 // @desc    Get interests for my properties (people interested in what I posted)
 // @route   GET /api/interests/received
 // @access  Private
-const getReceivedInterests = async (req, res, next) => {
+export const getReceivedInterests = async (req, res, next) => {
   try {
-    // 1. Find all properties created by current user
-    const myProperties = await Property.find({ creator: req.user.id }).select('_id');
+    // 1. Get full profile of the current user (the owner)
+    const owner = await User.findById(req.user.id);
+
+    // 2. Find all properties created by current user
+    const myProperties = await Property.find({ creator: req.user.id });
     const propertyIds = myProperties.map(p => p._id);
 
-    // 2. Find all interests linked to those properties
+    // 3. Find all interests linked to those properties
+    // We need more fields from userId for compatibility check
     const interests = await Interest.find({ propertyId: { $in: propertyIds } })
-        .populate('userId', 'name email phone interests hobbies')
-        .populate('propertyId', 'title city rent');
+        .populate('userId', 'name email phone interests hobbies preferences gender sleepSchedule smokingHabit drinkingHabit cleanlinessLevel preferredArea')
+        .populate('propertyId', 'title city area rent');
         
-    res.status(200).json(interests);
+    // 4. Calculate compatibility score (checksum) for each interest
+    const interestsWithScores = interests.map(interest => {
+        const interestObj = interest.toObject();
+        if (interest.userId && interest.propertyId) {
+            interestObj.checksum = calculateCompatibility(interest.userId, owner, interest.propertyId);
+        } else {
+            interestObj.checksum = 0;
+        }
+        return interestObj;
+    });
+
+    res.status(200).json(interestsWithScores);
   } catch (error) {
     next(error);
   }
@@ -81,7 +98,7 @@ const getReceivedInterests = async (req, res, next) => {
 // @desc    Update interest status (Accept/Reject)
 // @route   PUT /api/interests/:id
 // @access  Private
-const updateInterestStatus = async (req, res, next) => {
+export const updateInterestStatus = async (req, res, next) => {
     try {
         const { status } = req.body;
         const interest = await Interest.findById(req.params.id).populate('propertyId');
@@ -105,10 +122,3 @@ const updateInterestStatus = async (req, res, next) => {
         next(error);
     }
 }
-
-module.exports = {
-  createInterest,
-  getMyInterests,
-  getReceivedInterests,
-  updateInterestStatus
-};

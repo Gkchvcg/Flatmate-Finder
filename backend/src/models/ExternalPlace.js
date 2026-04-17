@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const externalPlaceSchema = mongoose.Schema(
   {
@@ -25,4 +25,4 @@ const externalPlaceSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('ExternalPlace', externalPlaceSchema);
+export default mongoose.model('ExternalPlace', externalPlaceSchema);

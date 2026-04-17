@@ -1,11 +1,11 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import User from '../models/User.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'flatmate-finder-dev-secret';
 
 // Generate JWT
-const generateToken = (id) => {
+export const generateToken = (id) => {
   return jwt.sign({ id }, JWT_SECRET, {
     expiresIn: '30d',
   });
@@ -14,7 +14,7 @@ const generateToken = (id) => {
 // @desc    Register new user
 // @route   POST /api/auth/register
 // @access  Public
-const registerUser = async (req, res, next) => {
+export const registerUser = async (req, res, next) => {
   try {
     const { name, email, password, phone } = req.body;
     const normalizedName = name?.trim();
@@ -74,7 +74,7 @@ const registerUser = async (req, res, next) => {
 // @desc    Authenticate a user
 // @route   POST /api/auth/login
 // @access  Public
-const loginUser = async (req, res, next) => {
+export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const normalizedEmail = email?.trim().toLowerCase();
@@ -96,9 +96,4 @@ const loginUser = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
-
-module.exports = {
-  registerUser,
-  loginUser,
 };

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const userSchema = mongoose.Schema(
   {
@@ -46,10 +46,33 @@ const userSchema = mongoose.Schema(
         default: 'Not Allowed',
       },
     },
+    gender: {
+      type: String,
+      enum: ['Male', 'Female', 'Other'],
+    },
+    sleepSchedule: {
+      type: String,
+      enum: ['Early Bird', 'Night Owl', 'Flexible'],
+    },
+    smokingHabit: {
+      type: Boolean,
+      default: false,
+    },
+    drinkingHabit: {
+      type: Boolean,
+      default: false,
+    },
+    cleanlinessLevel: {
+      type: String,
+      enum: ['Low', 'Medium', 'High'],
+    },
+    preferredArea: {
+      type: String,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);

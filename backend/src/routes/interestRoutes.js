@@ -1,16 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const {
-  createInterest,
-  getMyInterests,
-  getReceivedInterests,
-  updateInterestStatus
-} = require('../controllers/interestController');
-const { protect } = require('../middleware/authMiddleware');
+import { Router } from 'express';
+const router = Router();
+import { createInterest, getUserInterests, getReceivedInterests, updateInterestStatus } from '../controllers/interestController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 router.post('/', protect, createInterest);
-router.get('/me', protect, getMyInterests);
+router.get('/me', protect, getUserInterests);
 router.get('/received', protect, getReceivedInterests);
 router.put('/:id', protect, updateInterestStatus);
 
-module.exports = router;
+export default router;

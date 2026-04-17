@@ -1,9 +1,10 @@
-const User = require('../models/User');
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 // @desc    Get user data
 // @route   GET /api/users/me
 // @access  Private
-const getMe = async (req, res, next) => {
+export const getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     res.status(200).json(user);
@@ -15,10 +16,10 @@ const getMe = async (req, res, next) => {
 // @desc    Update user profile & preferences
 // @route   PUT /api/users/me
 // @access  Private
-const updateMe = async (req, res, next) => {
+export const updateMe = async (req, res, next) => {
   try {
-    const { name, phone, preferences, interests, hobbies } = req.body;
-    
+    const { name, phone, preferences, interests, hobbies, gender, sleepSchedule, smokingHabit, drinkingHabit, cleanlinessLevel, preferredArea } = req.body;
+
     // Only allow updating specific fields
     const updateFields = {};
     if (name) updateFields.name = name;
@@ -26,6 +27,12 @@ const updateMe = async (req, res, next) => {
     if (preferences) updateFields.preferences = preferences;
     if (interests) updateFields.interests = interests;
     if (hobbies) updateFields.hobbies = hobbies;
+    if (gender) updateFields.gender = gender;
+    if (sleepSchedule) updateFields.sleepSchedule = sleepSchedule;
+    if (smokingHabit !== undefined) updateFields.smokingHabit = smokingHabit;
+    if (drinkingHabit !== undefined) updateFields.drinkingHabit = drinkingHabit;
+    if (cleanlinessLevel) updateFields.cleanlinessLevel = cleanlinessLevel;
+    if (preferredArea) updateFields.preferredArea = preferredArea;
 
     const user = await User.findByIdAndUpdate(req.user.id, updateFields, {
       new: true,
@@ -38,7 +45,4 @@ const updateMe = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  getMe,
-  updateMe,
-};
+// Named exports used above

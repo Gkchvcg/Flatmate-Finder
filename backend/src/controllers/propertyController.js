@@ -1,4 +1,4 @@
-const Property = require('../models/Property');
+import Property from '../models/Property.js';
 
 // @desc    Get all properties (with filtering & pagination)
 // @route   GET /api/properties
@@ -65,7 +65,10 @@ const getProperty = async (req, res, next) => {
 // @access  Private
 const createProperty = async (req, res, next) => {
   try {
-    const { title, description, city, area, rent, deposit, amenities, availabilityDate } = req.body;
+    const {
+      title, description, city, area, rent, deposit, amenities, availabilityDate,
+      preferredGender, preferredSleepSchedule, smokingAllowed, drinkingAllowed, preferredCleanliness
+    } = req.body;
 
     if (!title || !description || !city || !rent) {
       res.status(400);
@@ -81,7 +84,12 @@ const createProperty = async (req, res, next) => {
       rent,
       deposit,
       amenities,
-      availabilityDate
+      availabilityDate,
+      preferredGender,
+      preferredSleepSchedule,
+      smokingAllowed,
+      drinkingAllowed,
+      preferredCleanliness
     });
 
     res.status(201).json(property);
@@ -156,7 +164,7 @@ const deleteProperty = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export default {
   getProperties,
   getProperty,
   createProperty,

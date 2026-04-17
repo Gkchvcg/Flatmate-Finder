@@ -13,11 +13,20 @@ const CreateListing = () => {
     rent: '',
     deposit: '',
     amenities: '',
-    availabilityDate: ''
+    availabilityDate: '',
+    preferredGender: 'Any',
+    preferredSleepSchedule: 'Any',
+    preferredCleanliness: 'Any',
+    smokingAllowed: true,
+    drinkingAllowed: true
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({ 
+      ...formData, 
+      [name]: type === 'checkbox' ? checked : value 
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -82,6 +91,51 @@ const CreateListing = () => {
         <div className="form-group">
           <label>Description</label>
           <textarea style={{resize:'vertical', minHeight:'100px'}} name="description" className="form-control" required value={formData.description} onChange={handleChange} />
+        </div>
+
+        <div style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
+          <h3 style={{ marginBottom: '1rem', fontSize: '1.25rem' }}>Flatmate Preferences (Compatibility)</h3>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>These options help us calculate the compatibility "Match %" for potential flatmates.</p>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="form-group">
+              <label>Preferred Gender</label>
+              <select name="preferredGender" className="form-control" value={formData.preferredGender} onChange={handleChange}>
+                <option value="Any">Any</option>
+                <option value="Male">Male Only</option>
+                <option value="Female">Female Only</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Sleep Schedule</label>
+              <select name="preferredSleepSchedule" className="form-control" value={formData.preferredSleepSchedule} onChange={handleChange}>
+                <option value="Any">No Preference</option>
+                <option value="Early Bird">Early Birds</option>
+                <option value="Night Owl">Night Owls</option>
+                <option value="Flexible">Flexible / No preference</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Cleanliness</label>
+              <select name="preferredCleanliness" className="form-control" value={formData.preferredCleanliness} onChange={handleChange}>
+                <option value="Any">No Preference</option>
+                <option value="High">Very Clean (High)</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low / Chilled</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+              <input type="checkbox" name="smokingAllowed" checked={formData.smokingAllowed} onChange={handleChange} />
+              Smoking Allowed
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+              <input type="checkbox" name="drinkingAllowed" checked={formData.drinkingAllowed} onChange={handleChange} />
+              Drinking Allowed
+            </label>
+          </div>
         </div>
 
         <button type="submit" className="btn btn-primary" disabled={loading}>

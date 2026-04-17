@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
@@ -14,7 +14,7 @@ const connectDB = async () => {
     }
 
     console.log(`Error connecting to provided MongoDB URI, falling back to mongodb-memory-server: ${error.message}`);
-    const { MongoMemoryServer } = require('mongodb-memory-server');
+    const { MongoMemoryServer } = await import('mongodb-memory-server');
     const mongoServer = await MongoMemoryServer.create();
     const mongoUri = mongoServer.getUri();
     const conn = await mongoose.connect(mongoUri);
@@ -22,4 +22,4 @@ const connectDB = async () => {
   }
 };
 
-module.exports = connectDB;
+export default connectDB;

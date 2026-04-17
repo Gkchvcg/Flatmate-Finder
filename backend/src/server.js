@@ -1,21 +1,23 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db');
-const { errorHandler } = require('./middleware/errorMiddleware');
-const app = require('./app');
+import express from 'express';
+import 'dotenv/config';
+import connectDB from './config/db.js';
+import { errorHandler } from './middleware/errorMiddleware.js';
+import app from './app.js';
+import { fileURLToPath } from 'url';
+import { dirname, join, resolve } from 'path';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 connectDB();
 
 // errorHandler must come before catch-all for API errors to return JSON
 app.use(errorHandler);
 
-const path = require('path');
-const frontendDist = path.join(__dirname, '../../frontend/dist');
+const frontendDist = join(__dirname, '../../frontend/dist');
 app.use(express.static(frontendDist));
 app.use((req, res) => {
-  res.sendFile(path.resolve(frontendDist, 'index.html'));
+  res.sendFile(resolve(frontendDist, 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;

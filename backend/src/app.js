@@ -1,5 +1,5 @@
-const express = require('express');
-const cors = require('cors');
+import express, { json, urlencoded } from 'express';
+import cors from 'cors';
 
 const app = express();
 
@@ -22,12 +22,17 @@ app.use(
   })
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(json());
+app.use(urlencoded({ extended: false }));
 
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/properties', require('./routes/propertyRoutes'));
-app.use('/api/interests', require('./routes/interestRoutes'));
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import propertyRoutes from './routes/propertyRoutes.js';
+import interestRoutes from './routes/interestRoutes.js';
 
-module.exports = app;
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/properties', propertyRoutes);
+app.use('/api/interests', interestRoutes);
+
+export default app;

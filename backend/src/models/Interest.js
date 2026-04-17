@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const interestSchema = mongoose.Schema(
   {
@@ -26,4 +26,4 @@ const interestSchema = mongoose.Schema(
 // Prevent duplicate interests from the same user for the same property
 interestSchema.index({ userId: 1, propertyId: 1 }, { unique: true });
 
-module.exports = mongoose.model('Interest', interestSchema);
+export default mongoose.model('Interest', interestSchema);

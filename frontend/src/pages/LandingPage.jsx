@@ -94,30 +94,6 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
-        <div className="lnd-hero-graphic" aria-hidden="true">
-          <div className="lnd-hero-card lnd-hc-1">
-            <MapPin size={20} />
-            <div>
-              <strong>Mumbai, Andheri</strong>
-              <p>₹12,000/mo · 2 BHK</p>
-            </div>
-          </div>
-          <div className="lnd-hero-card lnd-hc-2">
-            <Users size={20} />
-            <div>
-              <strong>3 Flatmates Found</strong>
-              <p>Matched today</p>
-            </div>
-          </div>
-          <div className="lnd-hero-card lnd-hc-3">
-            <Star size={20} style={{ color: '#f59e0b' }} />
-            <div>
-              <strong>4.9 Rating</strong>
-              <p>By verified users</p>
-            </div>
-          </div>
-          <div className="lnd-hero-blob" />
-        </div>
       </section>
 
       {/* ── FEATURES ── */}
