@@ -21,28 +21,28 @@ const Navbar = () => {
           <Home size={24} />
           Flatmate Finder
         </Link>
-        
         <div className="nav-links">
           {user ? (
             <>
-              <Link to="/dashboard"><Home size={18} style={{marginRight:'4px'}}/> Browse</Link>
-              <Link to="/create-listing"><PlusSquare size={18} style={{marginRight:'4px'}}/> Add Listing</Link>
-              <Link to="/profile"><UserIcon size={18} style={{marginRight:'4px'}}/> Profile</Link>
-              <button 
-                onClick={toggleTheme} 
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%', background: 'var(--bg-color)', border: '1px solid var(--border-color)', cursor: 'pointer', color: 'var(--primary-color)' }}
-                aria-label="Toggle Theme"
-              >
-                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-              </button>
+              <Link to="/dashboard"><Home size={18} style={{ marginRight: '4px' }} /> Browse</Link>
+              <Link to="/create-listing"><PlusSquare size={18} style={{ marginRight: '4px' }} /> Add Listing</Link>
+              <Link to="/profile"><UserIcon size={18} style={{ marginRight: '4px' }} /> Profile</Link>
+              {
+                (location.pathname === '/profile' || location.pathname === '/dashboard') && <button
+                  onClick={toggleTheme}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%', background: 'var(--bg-color)', border: '1px solid var(--border-color)', cursor: 'pointer', color: 'var(--primary-color)' }}
+                  aria-label="Toggle Theme">
+                  {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+              }
               <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <LogOut size={18} /> Logout
               </button>
             </>
           ) : (
             <>
-              <button 
-                onClick={toggleTheme} 
+              <button
+                onClick={toggleTheme}
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%', background: 'var(--bg-color)', border: '1px solid var(--border-color)', cursor: 'pointer', color: 'var(--primary-color)', marginRight: '0.75rem' }}
                 aria-label="Toggle Theme"
               >
@@ -51,7 +51,8 @@ const Navbar = () => {
               <Link to="/login" className="btn btn-outline">Login</Link>
               <Link to="/register" className="btn btn-primary">Register</Link>
             </>
-          )}
+          )
+          }
         </div>
       </div>
     </nav>

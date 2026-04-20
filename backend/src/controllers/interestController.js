@@ -18,30 +18,31 @@ export const createInterest = async (req, res, next) => {
     // Check if property exists
     const property = await Property.findById(propertyId);
     if (!property) {
-       res.status(404);
-       throw new Error('Property not found');
+      res.status(404);
+      throw new Error('Property not found');
     }
 
     // Prevent owner from showing interest in their own property
     if (property.creator.toString() === req.user.id) {
-        res.status(400);
-        throw new Error('Cannot show interest in your own property');
+      res.status(400);
+      throw new Error('Cannot show interest in your own property');
     }
 
     // Attempt to create interest (duplicate handled by unique index in schema)
     try {
-        const interest = await Interest.create({
-            userId: req.user.id,
-            propertyId,
-            message
-        });
-        res.status(201).json(interest);
-    } catch(err) {
-        if (err.code === 11000) {
-            res.status(400);
-            throw new Error('Interest already expressed for this property');
-        }
-        throw err;
+      const interest = await Interest.create({
+        userId: req.user.id,
+        propertyId,
+        message
+      });
+      await Property.findByIdAndUpdate(propertyId, { $inc: { pendingInterestCount: 1 } });
+      res.status(201).json(interest);
+    } catch (err) {
+      if (err.code === 11000) {
+        res.status(400);
+        throw new Error('Interest already expressed for this property');
+      }
+      throw err;
     }
 
   } catch (error) {
@@ -76,18 +77,17 @@ export const getReceivedInterests = async (req, res, next) => {
     // 3. Find all interests linked to those properties
     // We need more fields from userId for compatibility check
     const interests = await Interest.find({ propertyId: { $in: propertyIds } })
-        .populate('userId', 'name email phone interests hobbies preferences gender sleepSchedule smokingHabit drinkingHabit cleanlinessLevel preferredArea occupation')
-        .populate('propertyId', 'title city area rent');
-        
+      .populate('userId', 'name email phone interests hobbies preferences gender sleepSchedule smokingHabit drinkingHabit cleanlinessLevel preferredArea occupation')
+      .populate('propertyId', 'title city area rent');
     // 4. Calculate compatibility score (checksum) for each interest
     const interestsWithScores = interests.map(interest => {
-        const interestObj = interest.toObject();
-        if (interest.userId && interest.propertyId) {
-            interestObj.checksum = calculateCompatibility(interest.userId, owner, interest.propertyId);
-        } else {
-            interestObj.checksum = 0;
-        }
-        return interestObj;
+      const interestObj = interest.toObject();
+      if (interest.userId && interest.propertyId) {
+        interestObj.checksum = calculateCompatibility(interest.userId, owner, interest.propertyId);
+      } else {
+        interestObj.checksum = 0;
+      }
+      return interestObj;
     });
 
     res.status(200).json(interestsWithScores);
@@ -100,26 +100,51 @@ export const getReceivedInterests = async (req, res, next) => {
 // @route   PUT /api/interests/:id
 // @access  Private
 export const updateInterestStatus = async (req, res, next) => {
-    try {
-        const { status } = req.body;
-        const interest = await Interest.findById(req.params.id).populate('propertyId');
+  try {
+    const { status } = req.body;
+    const interest = await Interest.findById(req.params.id).populate('propertyId');
 
-        if (!interest) {
-            res.status(404);
-            throw new Error('Interest not found');
-        }
-
-        // Verify the logged-in user is the owner of the property
-        if (interest.propertyId.creator.toString() !== req.user.id) {
-            res.status(401);
-            throw new Error('Not authorized to update this interest');
-        }
-
-        interest.status = status;
-        const updatedInterest = await interest.save();
-        res.status(200).json(updatedInterest);
-
-    } catch (error) {
-        next(error);
+    if (!interest) {
+      res.status(404);
+      throw new Error('Interest not found');
     }
+
+    // Verify the logged-in user is the owner of the property
+    if (interest.propertyId.creator.toString() !== req.user.id) {
+      res.status(401);
+      throw new Error('Not authorized to update this interest');
+    }
+    res.status(200).json(updatedInterest);
+  } catch (error) {
+    next(error);
+  }
+  const confirmInterest = async (req, res, next) => {
+    try {
+      const interest = await Interest.findById(req.params.id).populate('propertyId');
+      if (!interest) {
+        res.status(404);
+        throw new Error('Interest not found');
+      }
+      if (interest.userId.toString() !== req.user.id) {
+        res.status(401);
+        throw new Error('Not authorized');
+      }
+      if (interest.status !== 'Accepted') {
+        res.status(400);
+        throw new Error('Can only confirm accepted interests');
+      }
+      interest.status = 'InterestedUserConfirmed';
+      await interest.save();
+      res.status(200).json(interest);
+    } catch (error) {
+      next(error);
+    }
+  };
+  export default {
+    createInterest,
+    getUserInterests,
+    getReceivedInterests,
+    updateInterestStatus,
+    confirmInterest
+  };
 }

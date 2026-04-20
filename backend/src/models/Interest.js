@@ -14,7 +14,7 @@ const interestSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Pending', 'Accepted', 'Rejected'],
+enum: ['Pending', 'Accepted', 'InterestedUserConfirmed', 'MutualConfirmed', 'Rejected'],
       default: 'Pending',
     },
     message: {

@@ -29,7 +29,6 @@ const Login = () => {
     <div className="auth-form">
       <h2 className="page-title" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Log in to your account</h2>
       {error && <div style={{ color: 'var(--danger)', marginBottom: '1rem', padding: '0.5rem', backgroundColor: '#FEF2F2', borderRadius: '4px' }}>{error}</div>}
-      
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="email">Email Address</label>
@@ -59,7 +58,6 @@ const Login = () => {
           Log In
         </button>
       </form>
-      
       <p style={{ marginTop: '1.5rem', textAlign: 'center', color: 'var(--text-muted)' }}>
         Don't have an account? <Link to="/register">Register here</Link>
       </p>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider } from './context/ThemeContext';\nimport { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -17,10 +17,7 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Public landing page — has its own navbar */}
-          <Route path="/" element={<LandingPage />} />
+      <Router>\n        <Toaster />\n        <Routes>\n          {/* Public landing page — has its own navbar */}\n          <Route path="/" element={<LandingPage />} />\n
 
           {/* Auth pages - use the app Navbar */}
           <Route

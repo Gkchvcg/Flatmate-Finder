@@ -32,10 +32,12 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import propertyRoutes from './routes/propertyRoutes.js';
 import interestRoutes from './routes/interestRoutes.js';
+import pairRoutes from './routes/pairRoutes.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/properties', propertyRoutes);
+app.use('/api/pairs', pairRoutes);
 app.use('/api/interests', interestRoutes);
 
 export default app;

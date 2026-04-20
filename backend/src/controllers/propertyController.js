@@ -9,11 +9,15 @@ const getProperties = async (req, res, next) => {
   try {
     const { city, minRent, maxRent, amenities, page = 1, limit = 10 } = req.query;
 
-    let query = {};
-    query.active = true;
+let query = {};
+query.active = true;
+query.pendingInterestCount = 0;
 
     if (city) {
       query.city = { $regex: city, $options: 'i' };
+    }
+    if (title) {
+      query.title = { $regex: title, $options: 'i' };
     }
 
     if (minRent || maxRent) {
@@ -40,7 +44,6 @@ const getProperties = async (req, res, next) => {
     if (req.user) {
       // Get the full profile of the logged-in user to ensure we have all compatibility fields
       const currentUser = await User.findById(req.user.id);
-      
       propertiesWithScores = properties.map(property => {
         const propertyObj = property.toObject();
         // Skip match calculation if user is viewing their own property
@@ -197,10 +200,20 @@ const deleteProperty = async (req, res, next) => {
   }
 };
 
+const getMyProperties = async (req, res, next) => {
+  try {
+    const properties = await Property.find({ creator: req.user.id }).sort({ createdAt: -1 });
+    res.json(properties);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   getProperties,
   getProperty,
   createProperty,
   updateProperty,
   deleteProperty,
+  getMyProperties
 };

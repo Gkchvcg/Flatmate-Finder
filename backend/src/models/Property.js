@@ -43,6 +43,10 @@ const propertySchema = mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    pendingInterestCount: {
+      type: Number,
+      default: 0,
+    },
     // Compatibility Preferences
     preferredGender: {
       type: String,

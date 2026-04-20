@@ -3,10 +3,7 @@ import api from '../api/api';
 import PropertyCard from '../components/PropertyCard';
 
 const Dashboard = () => {
-  const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ city: '', minRent: '', maxRent: '' });
-  const [interestedProperties, setInterestedProperties] = useState({}); // To mock/store state if they already interested
+  const [properties, setProperties] = useState([]);\n  const [loading, setLoading] = useState(true);\n  const [filters, setFilters] = useState({ city: '', minRent: '', maxRent: '', title: '' });\n  const [interestedProperties, setInterestedProperties] = useState({}); // To mock/store state if they already interested
 
   const fetchProperties = async () => {
     setLoading(true);
@@ -63,36 +60,7 @@ const Dashboard = () => {
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <h1 className="page-title">Browse Properties</h1>
         
-        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <input 
-            type="text" 
-            name="city" 
-            placeholder="Search city..." 
-            className="form-control" 
-            style={{ width: '150px' }}
-            value={filters.city} 
-            onChange={handleFilterChange} 
-          />
-          <input 
-            type="number" 
-            name="minRent" 
-            placeholder="Min rent" 
-            className="form-control" 
-            style={{ width: '120px' }}
-            value={filters.minRent} 
-            onChange={handleFilterChange} 
-          />
-          <input 
-            type="number" 
-            name="maxRent" 
-            placeholder="Max rent" 
-            className="form-control" 
-            style={{ width: '120px' }}
-            value={filters.maxRent} 
-            onChange={handleFilterChange} 
-          />
-          <button type="submit" className="btn btn-primary">Filter</button>
-        </form>
+        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>\n          <input \n            type="text" \n            name="title" \n            placeholder="Property title..." \n            className="form-control" \n            style={{ width: '150px' }}\n            value={filters.title} \n            onChange={handleFilterChange} \n          />\n          <input \n            type="text" \n            name="city" \n            placeholder="City..." \n            className="form-control" \n            style={{ width: '120px' }}\n            value={filters.city} \n            onChange={handleFilterChange} \n          />\n          <input \n            type="number" \n            name="minRent" \n            placeholder="Min rent" \n            className="form-control" \n            style={{ width: '120px' }}\n            value={filters.minRent} \n            onChange={handleFilterChange} \n          />\n          <input \n            type="number" \n            name="maxRent" \n            placeholder="Max rent" \n            className="form-control" \n            style={{ width: '120px' }}\n            value={filters.maxRent} \n            onChange={handleFilterChange} \n          />\n          <button type="submit" className="btn btn-primary">Search</button>\n        </form>
       </div>
 
       {loading ? (
