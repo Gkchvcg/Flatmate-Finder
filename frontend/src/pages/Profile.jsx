@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { motion } from 'framer-motion';
 import PropertyCard from '../components/PropertyCard';
 import { Search } from 'lucide-react';
 import api from '../api/api';
@@ -57,7 +56,7 @@ const Profile = () => {
             toast.success('Flatmate confirmed! Pair created and details shared.');
             fetchData();
         } catch (err) {
-            toast.error('Failed to confirm');
+            toast.error(`Failed to confirm: ${err.response?.data?.message || err.message}`);
         }
     };
 
@@ -199,99 +198,106 @@ const Profile = () => {
             <div style={{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
                 <h3 style={{ marginBottom: '1rem' }}>My Listings <Search size={20} style={{ verticalAlign: 'middle', marginLeft: '0.5rem', opacity: 0.6 }} /></h3>
                 <input
-                placeholder="Search my listings by title..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="form-control"
-                style={{ marginBottom: '1rem' }}/>
-                {myProperties.length === 0 ?(
-                <p style={{ color: 'var(--text-muted)' }}>No listings. <Link to="/create-listing" style={{ color: 'var(--primary-color)' }}>Create one</Link></p>
+                    placeholder="Search my listings by title..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="form-control"
+                    style={{ marginBottom: '1rem' }} />
+                {myProperties.length === 0 ? (
+                    <p style={{ color: 'var(--text-muted)' }}>No listings. <Link to="/create-listing" style={{ color: 'var(--primary-color)' }}>Create one</Link></p>
                 ) : (
-                <motion.div className="property-grid"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ staggerChildren: 0.05 }}
-                >
-                    {myProperties.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase())).map((property, index) => (
-                        <motion.div
-                        key={property._id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.05 }}
-                        >
-                        <PropertyCard property={property} />
-                        </motion.div>))}
+                    <motion.div className="property-grid"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ staggerChildren: 0.05 }}
+                    >
+                        {myProperties.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase())).map((property, index) => (
+                            <motion.div
+                                key={property._id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: index * 0.05 }}
+                            >
+                                <PropertyCard property={property} />
+                            </motion.div>))}
                     </motion.div>)
                 }
             </div>
-                < div style = {{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-    {/* Received Interests */ }
-    < div style = {{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-        <h3 style={{ marginBottom: '1rem' }}>Interests Received on My Properties</h3>
-{
-    receivedInterests.length === 0 ? (
-        <p style={{ color: 'var(--text-muted)' }}>No interests received yet.</p>
-    ) : (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        {receivedInterests.map(interest => (
-            <div key={interest._id} style={{ border: '1px solid var(--border-color)', padding: '1rem', borderRadius: '0.5rem', position: 'relative' }}>
-                <div className="checksum-badge" title="Compatibility Score">
-                    {interest.checksum}% Match
-                </div>
-                {interest.status === 'Accepted' && (\n                                      <p style={{ fontSize: '0.875rem', color: 'var(--success)', marginTop: '0.5rem' }}>Waiting for {interest.userId.name} confirmation...</p>\n                                    )}
-            <p><strong>{interest.userId?.name}</strong> is interested in <strong>{interest.propertyId?.title}</strong></p>
-            {interest.userId?.interests?.length > 0 && <p style={{ fontSize: '0.875rem', marginTop: '0.25rem', color: 'var(--text-color)' }}><strong>Interests:</strong> {interest.userId.interests.join(', ')}</p>}
-            {interest.userId?.hobbies?.length > 0 && <p style={{ fontSize: '0.875rem', marginTop: '0.25rem', color: 'var(--text-color)' }}><strong>Hobbies:</strong> {interest.userId.hobbies.join(', ')}</p>}
-            <p style={{ fontSize: '0.875rem', marginTop: '0.25rem', color: 'var(--text-color)' }}><strong>Occupation:</strong> {interest.userId?.occupation || 'Not specified'}</p>
-            {interest.message && (
-                <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: 'var(--bg-color)', borderRadius: '0.375rem', fontSize: '0.875rem' }}>
-                    <strong>Message:</strong> "{interest.message}"
-                </div>
-            )}
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0.5rem 0' }}>Status: <span style={{ fontWeight: 'bold' }}>{interest.status}</span></p>
+            < div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                {/* Received Interests */}
+                < div style={{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                    <h3 style={{ marginBottom: '1rem' }}>Interests Received on My Properties</h3>
+                    {
+                        receivedInterests.length === 0 ? (
+                            <p style={{ color: 'var(--text-muted)' }}>No interests received yet.</p>
+                        ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                {receivedInterests.map(interest => (
+                                    <div key={interest._id} style={{ border: '1px solid var(--border-color)', padding: '1rem', borderRadius: '0.5rem', position: 'relative' }}>
+                                        <div className="checksum-badge" title="Compatibility Score">
+                                            {interest.checksum}% Match
+                                        </div>
+                                        {interest.status === 'Accepted' && (
+                                            <p style={{ fontSize: '0.875rem', color: 'var(--success)', marginTop: '0.5rem' }}>Waiting for {interest.userId.name} confirmation...</p>)
+                                        }
+                                        <p><strong>{interest.userId?.name}</strong> is interested in <strong>{interest.propertyId?.title}</strong></p>
+                                        {interest.userId?.interests?.length > 0 && <p style={{ fontSize: '0.875rem', marginTop: '0.25rem', color: 'var(--text-color)' }}><strong>Interests:</strong> {interest.userId.interests.join(', ')}</p>}
+                                        {interest.userId?.hobbies?.length > 0 && <p style={{ fontSize: '0.875rem', marginTop: '0.25rem', color: 'var(--text-color)' }}><strong>Hobbies:</strong> {interest.userId.hobbies.join(', ')}</p>}
+                                        <p style={{ fontSize: '0.875rem', marginTop: '0.25rem', color: 'var(--text-color)' }}><strong>Occupation:</strong> {interest.userId?.occupation || 'Not specified'}</p>
+                                        {interest.message && (
+                                            <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: 'var(--bg-color)', borderRadius: '0.375rem', fontSize: '0.875rem' }}>
+                                                <strong>Message:</strong> "{interest.message}"
+                                            </div>
+                                        )}
+                                        <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0.5rem 0' }}>Status: <span style={{ fontWeight: 'bold' }}>{interest.status}</span></p>
 
-            {interest.status === 'Pending' && (
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button className="btn btn-primary" onClick={() => handleUpdateStatus(interest._id, 'Accepted')} style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem' }}>Accept</button>
-                    <button className="btn btn-danger" onClick={() => handleUpdateStatus(interest._id, 'Rejected')} style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem' }}>Reject</button>
-                </div>
-            )}
-        </div>
-                            ))}
-    </div>
-)
-}
+                                        {interest.status === 'Pending' && (
+                                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                <button className="btn btn-primary" onClick={() => handleUpdateStatus(interest._id, 'Accepted')} style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem' }}>Accept</button>
+                                                <button className="btn btn-danger" onClick={() => handleUpdateStatus(interest._id, 'Rejected')} style={{ padding: '0.25rem 0.5rem', fontSize: '0.875rem' }}>Reject</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )
+                    }
                 </div >
 
-    {/* Sent Interests */ }
-    < div style = {{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-        <h3 style={{ marginBottom: '1rem' }}>Properties I Liked</h3>
-{
-    myInterests.length === 0 ? (
-        <p style={{ color: 'var(--text-muted)' }}>You haven't shown interest in any properties.</p>
-    ) : (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        {myInterests.map(interest => (
-            <div key={interest._id} style={{ border: '1px solid var(--border-color)', padding: '1rem', borderRadius: '0.5rem' }}>
-                <h4>{interest.propertyId?.title}</h4>
-                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>City: {interest.propertyId?.city}</p>
-                <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>
-                    Status:
-                    <span style={{
-                        marginLeft: '4px',
-                        fontWeight: 'bold',
-                        color: interest.status === 'Accepted' ? 'var(--success)' :
-                            interest.status === 'Rejected' ? 'var(--danger)' : 'var(--text-muted)'
-                    }}>
-                        {interest.status}
-                    </span>
-                </p>
-                {interest.status === 'Accepted' && (\n                                        <div>\n                                          <p style={{ fontSize: '0.875rem', marginTop: '0.5rem', color: 'var(--success)' }}>Owner accepted! Confirm to pair up:</p>\n                                          <button className="btn btn-success" onClick={() => handleConfirm(interest._id)} style={{ marginTop: '0.25rem', padding: '0.25rem 0.5rem' }}>Confirm & Share Details</button>\n                                        </div>\n                                    )}
-            </div>
-        ))}
-    </div>
-)
-}
+                {/* Sent Interests */}
+                < div style={{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: '0.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                    <h3 style={{ marginBottom: '1rem' }}>Properties I Liked</h3>
+                    {
+                        myInterests.length === 0 ? (
+                            <p style={{ color: 'var(--text-muted)' }}>You haven't shown interest in any properties.</p>
+                        ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                {myInterests.map(interest => (
+                                    <div key={interest._id} style={{ border: '1px solid var(--border-color)', padding: '1rem', borderRadius: '0.5rem' }}>
+                                        <h4>{interest.propertyId?.title}</h4>
+                                        <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>City: {interest.propertyId?.city}</p>
+                                        <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>
+                                            Status:
+                                            <span style={{
+                                                marginLeft: '4px',
+                                                fontWeight: 'bold',
+                                                color: interest.status === 'Accepted' ? 'var(--success)' :
+                                                    interest.status === 'Rejected' ? 'var(--danger)' : 'var(--text-muted)'
+                                            }}>
+                                                {interest.status}
+                                            </span>
+                                        </p>
+                                        {interest.status === 'Accepted' && (
+                                            <div>
+                                                <p style={{ fontSize: '0.875rem', marginTop: '0.5rem', color: 'var(--success)' }}>Owner accepted! Confirm to pair up:</p>
+                                                <button className="btn btn-success" onClick={() => handleConfirm(interest._id)} style={{ marginTop: '0.25rem', padding: '0.25rem 0.5rem' }}>Confirm & Share Details</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )
+                    }
                 </div >
             </div >
         </div >
