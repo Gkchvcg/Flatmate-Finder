@@ -154,8 +154,21 @@ const LandingPage = () => {
             margin: '0 auto', 
             padding: '3rem', 
             borderRadius: '2rem', 
-            position: 'relative'
+            position: 'relative',
+            overflow: 'hidden'
           }}>
+            <div style={{ 
+              position: 'absolute', 
+              top: 0, 
+              left: 0, 
+              width: '100%', 
+              height: '100%', 
+              backgroundImage: "url('/palestine-bg.png')", 
+              backgroundSize: 'cover', 
+              backgroundPosition: 'center', 
+              opacity: 0.15, 
+              zIndex: 0
+            }} />
             <h2 style={{ 
               fontSize: '2rem', 
               fontWeight: '500', 
