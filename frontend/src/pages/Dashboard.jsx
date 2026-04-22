@@ -14,6 +14,7 @@ const Dashboard = () => {
     try {
       const queryParams = new URLSearchParams();
       if (filters.city) queryParams.append('city', filters.city);
+      if (filters.title) queryParams.append('title', filters.title);
       if (filters.minRent) queryParams.append('minRent', filters.minRent);
       if (filters.maxRent) queryParams.append('maxRent', filters.maxRent);
 

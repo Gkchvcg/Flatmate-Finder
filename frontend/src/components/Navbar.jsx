@@ -29,14 +29,12 @@ const Navbar = () => {
               <Link to="/create-listing"><PlusSquare size={18} style={{ marginRight: '4px' }} /> Add Listing</Link>
               <Link to="/profile"><UserIcon size={18} style={{ marginRight: '4px' }} /> Profile</Link>
               <Link to="/matches" className="btn btn-outline" style={{ marginLeft: '0.5rem' }}>Matches</Link>
-              {
-                (location.pathname === '/profile' || location.pathname === '/dashboard') && <button
-                  onClick={toggleTheme}
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%', background: 'var(--bg-color)', border: '1px solid var(--border-color)', cursor: 'pointer', color: 'var(--primary-color)' }}
-                  aria-label="Toggle Theme">
-                  {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-                </button>
-              }
+              <button
+                onClick={toggleTheme}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%', background: 'var(--bg-color)', border: '1px solid var(--border-color)', cursor: 'pointer', color: 'var(--primary-color)', marginLeft: '0.5rem' }}
+                aria-label="Toggle Theme">
+                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
               <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <LogOut size={18} /> Logout
               </button>

@@ -33,23 +33,24 @@ const Register = () => {
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(payload.email)) {
-      setError('Please enter a valid email address.');
+      setError('Please enter a valid email address (e.g., example@gmail.com).');
       setIsSubmitting(false);
       return;
     }
 
     if (payload.phone) {
+      // Remove any non-numeric characters
       const phoneDigits = payload.phone.replace(/\D/g, '');
-      if (phoneDigits.length !== 10 && phoneDigits.length !== 12) {
-        setError('Phone number must be exactly 10 digits.');
-        setIsSubmitting(false);
-        return;
+      
+      // If starts with 91 and has 12 digits, extract the 10 digit number
+      let basePhone = phoneDigits;
+      if (phoneDigits.length === 12 && phoneDigits.startsWith('91')) {
+        basePhone = phoneDigits.slice(2);
       }
-      // Force +91 country code
-      const basePhone = phoneDigits.length === 12 && phoneDigits.startsWith('91') ? phoneDigits.slice(2) : (phoneDigits.length === 10 ? phoneDigits : null);
-      if (!basePhone) {
+      
+      if (basePhone.length !== 10) {
         setError('Phone number must be exactly 10 digits.');
         setIsSubmitting(false);
         return;
