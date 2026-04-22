@@ -338,10 +338,6 @@ const LandingPage = () => {
                 </div>
                 <h3 style={{ margin: '0 0 0.25rem 0' }}>{member.name}</h3>
                 <p style={{ color: 'var(--primary-color)', fontWeight: '500', fontSize: '0.85rem', margin: 0 }}>{member.role}</p>
-                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-                  <a href="#" style={{ color: 'var(--text-muted)', fontWeight: 'bold', textDecoration: 'none', fontSize: '0.9rem' }}>GitHub</a>
-                  <a href="#" style={{ color: 'var(--text-muted)', fontWeight: 'bold', textDecoration: 'none', fontSize: '0.9rem' }}>LinkedIn</a>
-                </div>
               </motion.div>
             ))}
           </div>
