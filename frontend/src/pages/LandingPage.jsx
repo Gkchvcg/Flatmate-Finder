@@ -353,15 +353,15 @@ const LandingPage = () => {
             <div className="lnd-contact-details">
               <div className="lnd-contact-item">
                 <Mail size={20} />
-                <span>support@flatmatefinder.in</span>
+                <span>maroofhusain2006@gmail.com</span>
               </div>
               <div className="lnd-contact-item">
                 <Phone size={20} />
-                <span>+91 98765 43210</span>
+                <span>+91 7355284571</span>
               </div>
               <div className="lnd-contact-item">
                 <MapPin size={20} />
-                <span>Bengaluru, Karnataka, India</span>
+                <span>Noida, Uttar Pradesh, India</span>
               </div>
             </div>
           </div>
