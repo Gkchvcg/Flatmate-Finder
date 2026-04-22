@@ -115,91 +115,101 @@ const LandingPage = () => {
             <button onClick={() => scrollTo(aboutRef)} className="lnd-btn lnd-btn-ghost lnd-btn-lg">
               Learn More <ChevronDown size={18} />
             </button>
-          </motion.div>
-          <motion.div 
+            <motion.div 
             className="lnd-hero-stats"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.8 }}
+            style={{ marginBottom: '5rem' }}
           >
             <div className="lnd-stat">
-              <span className="lnd-stat-number">12k+</span>
-              <span className="lnd-stat-label">Active Listings</span>
+              <span className="lnd-stat-number">2k+</span>
+              <span className="lnd-stat-label">Active Users</span>
             </div>
-            <div className="lnd-stat-divider" />
+            <div className="lnd-stat-divider"></div>
             <div className="lnd-stat">
-              <span className="lnd-stat-number">8k+</span>
-              <span className="lnd-stat-label">Happy Flatmates</span>
+              <span className="lnd-stat-number">500+</span>
+              <span className="lnd-stat-label">Properties</span>
             </div>
-            <div className="lnd-stat-divider" />
+            <div className="lnd-stat-divider"></div>
             <div className="lnd-stat">
-              <span className="lnd-stat-number">50+</span>
-              <span className="lnd-stat-label">Cities Covered</span>
+              <span className="lnd-stat-number">1k+</span>
+              <span className="lnd-stat-label">Success Matches</span>
             </div>
           </motion.div>
-        </motion.div>
-      </section>
-      
-      {/* ── QUOTE SECTION ── */}
-      <section className="lnd-quote-section" style={{ padding: '6rem 2rem', background: 'transparent', textAlign: 'center' }}>
-        <motion.div 
-          className="lnd-section-inner"
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="glass-card" style={{ 
-            maxWidth: '900px', 
-            margin: '0 auto', 
-            padding: '4rem 3rem', 
-            borderRadius: '2.5rem', 
-            position: 'relative',
-            overflow: 'hidden',
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.2)'
-          }}>
-            <div style={{ 
-              position: 'absolute', 
-              top: 0, 
-              left: 0, 
-              width: '100%', 
-              height: '100%', 
-              backgroundImage: "url('/palestine-bg.png')", 
-              backgroundSize: 'cover', 
-              backgroundPosition: 'center', 
-              opacity: 0.22, 
-              zIndex: 0
-            }} />
-            <h2 style={{ 
-              fontSize: '2rem', 
-              fontWeight: '500', 
-              lineHeight: '1.4', 
-              color: 'var(--text-main)', 
-              fontStyle: 'italic',
+
+          {/* ── QUOTE SECTION (INTEGRATED) ── */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            style={{ marginTop: '4rem' }}
+          >
+            <div className="glass-card" style={{ 
+              maxWidth: '900px', 
+              margin: '0 auto', 
+              padding: '4rem 3rem', 
+              borderRadius: '2.5rem', 
               position: 'relative',
-              zIndex: 1
+              overflow: 'hidden',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(15px)',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.3)'
             }}>
-              "A thief never becomes an owner"
-              <br />
-              <span style={{ fontSize: '1.5rem', display: 'block', marginTop: '1rem', opacity: 0.8 }}>
-                "Everyone is illegal on stolen land"
-              </span>
-            </h2>
-            <div style={{ 
-              marginTop: '1.5rem', 
-              height: '2px', 
-              width: '50px', 
-              background: 'var(--primary-color)', 
-              margin: '1.5rem auto' 
-            }} />
-            <p style={{ color: 'var(--text-muted)', fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.9rem' }}>
-              The Flatmate Finder Philosophy
-            </p>
-          </div>
-        </motion.div>
+              <div style={{ 
+                position: 'absolute', 
+                top: 0, 
+                left: 0, 
+                width: '100%', 
+                height: '100%', 
+                backgroundImage: "url('/palestine-bg.png')", 
+                backgroundSize: 'cover', 
+                backgroundPosition: 'center', 
+                opacity: 0.25, 
+                zIndex: 0
+              }} />
+              <h2 style={{ 
+                fontSize: '2.2rem', 
+                fontWeight: '500', 
+                lineHeight: '1.4', 
+                color: '#ffffff', 
+                fontStyle: 'italic',
+                position: 'relative',
+                zIndex: 1,
+                textShadow: '0 2px 10px rgba(0,0,0,0.3)'
+              }}>
+                "A thief never becomes an owner"
+                <br />
+                <span style={{ fontSize: '1.6rem', display: 'block', marginTop: '1.2rem', opacity: 0.9 }}>
+                  "Everyone is illegal on stolen land"
+                </span>
+              </h2>
+              <div style={{ 
+                marginTop: '1.8rem', 
+                height: '2px', 
+                width: '60px', 
+                background: 'var(--primary-color)', 
+                margin: '1.8rem auto' 
+              }} />
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontWeight: '600', letterSpacing: '2px', textTransform: 'uppercase', fontSize: '0.85rem' }}>
+                The Flatmate Finder Philosophy
+              </p>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Bottom Fade Transition */}
+        <div style={{ 
+          position: 'absolute', 
+          bottom: 0, 
+          left: 0, 
+          width: '100%', 
+          height: '200px', 
+          background: 'linear-gradient(to bottom, transparent, var(--bg-color))',
+          zIndex: 2
+        }} />
       </section>
 
       {/* ── FEATURES ── */}
