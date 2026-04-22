@@ -165,7 +165,7 @@ const LandingPage = () => {
               position: 'relative',
               zIndex: 1
             }}>
-              "A house is made of bricks and beams. A home is made of the right people and shared dreams."
+              "A thief never becomes an owner"
             </h2>
             <div style={{ 
               marginTop: '1.5rem', 
