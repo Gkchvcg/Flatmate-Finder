@@ -470,7 +470,7 @@ const LandingPage = () => {
             <p>Making co-living simple, safe, and social.</p>
           </div>
           <div className="lnd-footer-links">
-            <span>© 2024 Flatmate Finder. All rights reserved.</span>
+            <span>© 2026 Flatmate Finder. All rights reserved.</span>
             <div className="lnd-footer-nav">
               <button onClick={() => scrollTo(homeRef)}>Home</button>
               <button onClick={() => scrollTo(aboutRef)}>About</button>
