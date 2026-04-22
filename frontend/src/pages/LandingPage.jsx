@@ -28,8 +28,8 @@ const LandingPage = () => {
       {/* ── LANDING NAVBAR ── */}
       <nav className="landing-nav">
         <div className="landing-nav-inner">
-          <div className="landing-logo">
-            <Home size={26} />
+          <div className="landing-logo" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <img src="/logo.png" alt="Logo" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
             <span>Flatmate Finder</span>
           </div>
           <div className="landing-nav-links">
@@ -395,8 +395,8 @@ const LandingPage = () => {
       <footer className="lnd-footer">
         <div className="lnd-section-inner lnd-footer-inner">
           <div className="lnd-footer-brand">
-            <div className="landing-logo" style={{ marginBottom: '0.75rem' }}>
-              <Home size={22} />
+            <div className="landing-logo" style={{ marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <img src="/logo.png" alt="Logo" style={{ width: '24px', height: '24px', borderRadius: '4px' }} />
               <span>Flatmate Finder</span>
             </div>
             <p>Making co-living simple, safe, and social.</p>

@@ -18,8 +18,8 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="container">
-        <Link to={user ? "/dashboard" : "/"} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', fontSize: '1.25rem', color: 'var(--primary-color)' }}>
-          <Home size={24} />
+        <Link to={user ? "/dashboard" : "/"} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 'bold', fontSize: '1.25rem', color: 'var(--primary-color)', textDecoration: 'none' }}>
+          <img src="/logo.png" alt="Flatmate Finder Logo" style={{ width: '32px', height: '32px', borderRadius: '8px' }} />
           Flatmate Finder
         </Link>
         <div className="nav-links">
