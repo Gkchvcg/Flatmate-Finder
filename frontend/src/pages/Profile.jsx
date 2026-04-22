@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import PropertyCard from '../components/PropertyCard';
 import { Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import api from '../api/api';
+import { motion } from 'framer-motion';
 
 const Profile = () => {
     const [profile, setProfile] = useState({ name: '', phone: '', email: '', interests: [], hobbies: [] });
@@ -13,6 +15,9 @@ const Profile = () => {
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState({ interests: '', hobbies: '', occupation: 'Other' });
+    const [aiAnalysis, setAiAnalysis] = useState({});
+    const [analyzingAuth, setAnalyzingAuth] = useState(null);
+    const [generatingBio, setGeneratingBio] = useState(false);
 
     const fetchData = async () => {
         setLoading(true);
@@ -35,7 +40,8 @@ const Profile = () => {
                 cleanlinessLevel: profileRes.data.cleanlinessLevel || '',
                 preferredArea: profileRes.data.preferredArea || '',
                 budget: profileRes.data.preferences?.budget || '',
-                occupation: profileRes.data.occupation || 'Other'
+                occupation: profileRes.data.occupation || 'Other',
+                bio: profileRes.data.bio || ''
             });
             setMyInterests(sentRes.data);
             setReceivedInterests(receivedRes.data);
@@ -67,6 +73,7 @@ const Profile = () => {
             const res = await api.put('/users/me', {
                 interests: interestsArray,
                 hobbies: hobbiesArray,
+                bio: editForm.bio,
                 gender: editForm.gender,
                 sleepSchedule: editForm.sleepSchedule,
                 smokingHabit: editForm.smokingHabit,
@@ -85,6 +92,28 @@ const Profile = () => {
             toast.error(`Failed to update profile: ${err.response?.data?.message || err.message}`);
         }
     };
+
+    const handleGenerateBio = async () => {
+        if (!editForm.interests && !editForm.hobbies) {
+            toast.error("Please add some interests or hobbies first!");
+            return;
+        }
+        setGeneratingBio(true);
+        try {
+            const res = await api.post('/ai/user-bio', {
+                interests: editForm.interests.split(','),
+                hobbies: editForm.hobbies.split(','),
+                occupation: editForm.occupation,
+                name: profile.name
+            });
+            setEditForm(prev => ({ ...prev, bio: res.data.bio }));
+            toast.success("AI bio generated!");
+        } catch (err) {
+            toast.error("Failed to generate bio with AI");
+        } finally {
+            setGeneratingBio(false);
+        }
+    };
     const handleUpdateStatus = async (interestId, status) => {
         try {
             await api.put(`/interests/${interestId}`, { status });
@@ -95,10 +124,38 @@ const Profile = () => {
         }
     };
 
+    const handleAiAnalysis = async (interestId, requesterId) => {
+        setAnalyzingAuth(interestId);
+        try {
+            const res = await api.get(`/ai/compatibility?user1Id=${profile._id}&user2Id=${requesterId}`);
+            setAiAnalysis(prev => ({ ...prev, [interestId]: res.data }));
+        } catch (err) {
+            toast.error(`Failed to analyze: ${err.response?.data?.message || err.message}`);
+        } finally {
+            setAnalyzingAuth(null);
+        }
+    };
+
+    const handleDeleteProperty = async (propertyId) => {
+        try {
+            await api.delete(`/properties/${propertyId}`);
+            toast.success('Listing deleted successfully!');
+            fetchData();
+        } catch (err) {
+            toast.error(`Failed to delete listing: ${err.response?.data?.message || err.message}`);
+        }
+    };
+
     if (loading) return <div style={{ padding: '2rem' }}>Loading profile...</div>;
 
     return (
-        <div style={{ padding: '2rem 0' }}>
+        <motion.div 
+            style={{ padding: '2rem 0' }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+        >
             <h1 className="page-title">My Profile</h1>
             <div style={{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: '0.5rem', marginBottom: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -111,6 +168,24 @@ const Profile = () => {
 
                 {isEditing ? (
                     <div style={{ marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
+                        <div className="form-group">
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                <label style={{ margin: 0 }}>Bio</label>
+                                <button 
+                                    type="button" 
+                                    onClick={handleGenerateBio} 
+                                    disabled={generatingBio}
+                                    style={{
+                                        background: 'linear-gradient(135deg, var(--primary-color), #7C3AED)',
+                                        color: 'white', border: 'none', borderRadius: '4px', padding: '0.2rem 0.6rem',
+                                        fontSize: '0.75rem', cursor: generatingBio ? 'not-allowed' : 'pointer'
+                                    }}
+                                >
+                                    ✨ {generatingBio ? 'Writing...' : 'AI Auto-Write'}
+                                </button>
+                            </div>
+                            <textarea className="form-control" value={editForm.bio} onChange={e => setEditForm({ ...editForm, bio: e.target.value })} placeholder="Tell us about yourself..." style={{ minHeight: '80px', resize: 'vertical' }} />
+                        </div>
                         <div className="form-group">
                             <label>Interests (comma separated)</label>
                             <input type="text" className="form-control" value={editForm.interests} onChange={e => setEditForm({ ...editForm, interests: e.target.value })} placeholder="e.g. Reading, Traveling" />
@@ -181,6 +256,11 @@ const Profile = () => {
                     </div>
                 ) : (
                     <div style={{ marginTop: '1rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
+                        {profile.bio && (
+                            <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'var(--glass-bg)', borderRadius: '0.5rem', border: '1px solid var(--glass-border)', fontStyle: 'italic', color: 'var(--text-main)', lineHeight: '1.5' }}>
+                                "{profile.bio}"
+                            </div>
+                        )}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                             <p><strong>Interests:</strong> {profile.interests?.length > 0 ? profile.interests.join(', ') : 'Not specified'}</p>
                             <p><strong>Hobbies:</strong> {profile.hobbies?.length > 0 ? profile.hobbies.join(', ') : 'Not specified'}</p>
@@ -218,7 +298,7 @@ const Profile = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, delay: index * 0.05 }}
                             >
-                                <PropertyCard property={property} />
+                                <PropertyCard property={property} onDelete={handleDeleteProperty} />
                             </motion.div>))}
                     </motion.div>)
                 }
@@ -249,6 +329,28 @@ const Profile = () => {
                                                 <strong>Message:</strong> "{interest.message}"
                                             </div>
                                         )}
+                                        
+                                        {/* AI Analysis Section */}
+                                        <div style={{ marginTop: '0.75rem' }}>
+                                            {aiAnalysis[interest._id] ? (
+                                                <div style={{ padding: '0.75rem', background: 'var(--glass-bg)', border: '1px dashed var(--primary-color)', borderRadius: '0.375rem' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', color: 'var(--primary-color)' }}>
+                                                        <span>✨</span> <strong>AI Compatibility: {aiAnalysis[interest._id].score}%</strong>
+                                                    </div>
+                                                    <p style={{ fontSize: '0.875rem', color: 'var(--text-main)', fontStyle: 'italic' }}>"{aiAnalysis[interest._id].reason}"</p>
+                                                </div>
+                                            ) : (
+                                                <button 
+                                                    className="btn btn-outline" 
+                                                    style={{ padding: '0.25rem 0.6rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                                                    onClick={() => handleAiAnalysis(interest._id, interest.userId._id)}
+                                                    disabled={analyzingAuth === interest._id}
+                                                >
+                                                    ✨ {analyzingAuth === interest._id ? 'Analyzing...' : 'AI Profile Analysis'}
+                                                </button>
+                                            )}
+                                        </div>
+
                                         <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0.5rem 0' }}>Status: <span style={{ fontWeight: 'bold' }}>{interest.status}</span></p>
 
                                         {interest.status === 'Pending' && (
@@ -300,7 +402,7 @@ const Profile = () => {
                     }
                 </div >
             </div >
-        </div >
+        </motion.div >
     );
 };
 

@@ -18,12 +18,13 @@ export const getMe = async (req, res, next) => {
 // @access  Private
 export const updateMe = async (req, res, next) => {
   try {
-    const { name, phone, preferences, interests, hobbies, gender, sleepSchedule, smokingHabit, drinkingHabit, cleanlinessLevel, preferredArea, occupation } = req.body;
+    const { name, phone, bio, preferences, interests, hobbies, gender, sleepSchedule, smokingHabit, drinkingHabit, cleanlinessLevel, preferredArea, occupation } = req.body;
 
     // Only allow updating specific fields
     const updateFields = {};
     if (name) updateFields.name = name;
     if (phone) updateFields.phone = phone;
+    if (bio !== undefined) updateFields.bio = bio;
     if (preferences) updateFields.preferences = preferences;
     if (interests) updateFields.interests = interests;
     if (hobbies) updateFields.hobbies = hobbies;

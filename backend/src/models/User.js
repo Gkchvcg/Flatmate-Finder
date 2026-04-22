@@ -6,6 +6,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a name'],
     },
+    bio: {
+      type: String,
+      default: '',
+    },
     email: {
       type: String,
       required: [true, 'Please add an email'],
@@ -73,6 +77,13 @@ const userSchema = mongoose.Schema(
       type: String,
       enum: ['Student', 'Professional', 'Other'],
       default: 'Other',
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
     },
   },
   {

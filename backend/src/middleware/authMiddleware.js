@@ -8,7 +8,7 @@ export const protect = async (req, res, next) => {
 
   if (
     req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
+    req.headers.authorization.toLowerCase().startsWith('bearer')
   ) {
     try {
       token = req.headers.authorization.split(' ')[1];
@@ -16,13 +16,14 @@ export const protect = async (req, res, next) => {
       req.user = await User.findById(decoded.id).select('-password');
       
       if (!req.user) {
+        console.warn(`Auth failed: User ID ${decoded.id} not found in database.`);
         res.status(401);
         return next(new Error('Not authorized, user not found'));
       }
 
       next();
     } catch (error) {
-      console.error(error);
+      console.error('Auth failed: Token verification error:', error.message);
       res.status(401);
       next(new Error('Not authorized, token failed'));
     }

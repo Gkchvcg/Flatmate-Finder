@@ -1,7 +1,7 @@
 import React from 'react';
 import { MapPin, Calendar, Heart } from 'lucide-react';
 
-const PropertyCard = ({ property, onInterest, interestStatus }) => {
+const PropertyCard = ({ property, onInterest, interestStatus, onDelete }) => {
   const getMatchColor = (score) => {
     if (score >= 80) return 'linear-gradient(135deg, #10b981 0%, #059669 100%)'; // Green (Excellent)
     if (score >= 50) return 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'; // Orange (Good)
@@ -66,6 +66,19 @@ const PropertyCard = ({ property, onInterest, interestStatus }) => {
           >
             <Heart size={16} fill={interestStatus ? 'var(--primary-color)' : 'none'} />
             {interestStatus ? interestStatus : 'Interested'}
+          </button>
+        )}
+        {onDelete && (
+          <button 
+            className="btn btn-danger"
+            style={{display:'flex', alignItems:'center', gap:'4px', padding:'0.25rem 0.75rem', marginTop: 'auto'}}
+            onClick={() => {
+              if (window.confirm('Are you sure you want to delete this listing?')) {
+                onDelete(property._id);
+              }
+            }}
+          >
+            Delete
           </button>
         )}
       </div>

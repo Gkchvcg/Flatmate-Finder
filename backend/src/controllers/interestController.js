@@ -114,37 +114,48 @@ export const updateInterestStatus = async (req, res, next) => {
       res.status(401);
       throw new Error('Not authorized to update this interest');
     }
+    // Update the actual interest document
+    interest.status = status;
+    const updatedInterest = await interest.save();
+    
+    // Manage pending counts
+    if (status === 'Accepted' || status === 'Rejected') {
+      await Property.findByIdAndUpdate(interest.propertyId._id, { $inc: { pendingInterestCount: -1 } });
+    }
+
     res.status(200).json(updatedInterest);
   } catch (error) {
     next(error);
   }
-  const confirmInterest = async (req, res, next) => {
-    try {
-      const interest = await Interest.findById(req.params.id).populate('propertyId');
-      if (!interest) {
-        res.status(404);
-        throw new Error('Interest not found');
-      }
-      if (interest.userId.toString() !== req.user.id) {
-        res.status(401);
-        throw new Error('Not authorized');
-      }
-      if (interest.status !== 'Accepted') {
-        res.status(400);
-        throw new Error('Can only confirm accepted interests');
-      }
-      interest.status = 'InterestedUserConfirmed';
-      await interest.save();
-      res.status(200).json(interest);
-    } catch (error) {
-      next(error);
+};
+
+export const confirmInterest = async (req, res, next) => {
+  try {
+    const interest = await Interest.findById(req.params.id).populate('propertyId');
+    if (!interest) {
+      res.status(404);
+      throw new Error('Interest not found');
     }
-  };
-  export default {
-    createInterest,
-    getUserInterests,
-    getReceivedInterests,
-    updateInterestStatus,
-    confirmInterest
-  };
-}
+    if (interest.userId.toString() !== req.user.id) {
+      res.status(401);
+      throw new Error('Not authorized');
+    }
+    if (interest.status !== 'Accepted') {
+      res.status(400);
+      throw new Error('Can only confirm accepted interests');
+    }
+    interest.status = 'InterestedUserConfirmed';
+    await interest.save();
+    res.status(200).json(interest);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default {
+  createInterest,
+  getUserInterests,
+  getReceivedInterests,
+  updateInterestStatus,
+  confirmInterest
+};

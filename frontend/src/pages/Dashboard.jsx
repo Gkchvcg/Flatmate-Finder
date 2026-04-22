@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/api';
 import PropertyCard from '../components/PropertyCard';
+import { motion } from 'framer-motion';
 
 const Dashboard = () => {
-  const [properties, setProperties] = useState([]);\n  const [loading, setLoading] = useState(true);\n  const [filters, setFilters] = useState({ city: '', minRent: '', maxRent: '', title: '' });\n  const [interestedProperties, setInterestedProperties] = useState({}); // To mock/store state if they already interested
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({ city: '', minRent: '', maxRent: '', title: '' });
+  const [interestedProperties, setInterestedProperties] = useState({}); // To mock/store state if they already interested
 
   const fetchProperties = async () => {
     setLoading(true);
@@ -14,7 +18,7 @@ const Dashboard = () => {
       if (filters.maxRent) queryParams.append('maxRent', filters.maxRent);
 
       const response = await api.get(`/properties?${queryParams.toString()}`);
-      setProperties(response.data.properties);
+      setProperties(response.data.properties || []);
 
       // Also fetch user's interests so we know what they already clicked
       const interestsRes = await api.get('/interests/me');
@@ -56,32 +60,88 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+    >
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <h1 className="page-title">Browse Properties</h1>
         
-        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>\n          <input \n            type="text" \n            name="title" \n            placeholder="Property title..." \n            className="form-control" \n            style={{ width: '150px' }}\n            value={filters.title} \n            onChange={handleFilterChange} \n          />\n          <input \n            type="text" \n            name="city" \n            placeholder="City..." \n            className="form-control" \n            style={{ width: '120px' }}\n            value={filters.city} \n            onChange={handleFilterChange} \n          />\n          <input \n            type="number" \n            name="minRent" \n            placeholder="Min rent" \n            className="form-control" \n            style={{ width: '120px' }}\n            value={filters.minRent} \n            onChange={handleFilterChange} \n          />\n          <input \n            type="number" \n            name="maxRent" \n            placeholder="Max rent" \n            className="form-control" \n            style={{ width: '120px' }}\n            value={filters.maxRent} \n            onChange={handleFilterChange} \n          />\n          <button type="submit" className="btn btn-primary">Search</button>\n        </form>
+        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <input
+            type="text"
+            name="title"
+            placeholder="Property title..."
+            className="form-control"
+            style={{ width: '150px' }}
+            value={filters.title}
+            onChange={handleFilterChange}
+          />
+          <input
+            type="text"
+            name="city"
+            placeholder="City..."
+            className="form-control"
+            style={{ width: '120px' }}
+            value={filters.city}
+            onChange={handleFilterChange}
+          />
+          <input
+            type="number"
+            name="minRent"
+            placeholder="Min rent"
+            className="form-control"
+            style={{ width: '120px' }}
+            value={filters.minRent}
+            onChange={handleFilterChange}
+          />
+          <input
+            type="number"
+            name="maxRent"
+            placeholder="Max rent"
+            className="form-control"
+            style={{ width: '120px' }}
+            value={filters.maxRent}
+            onChange={handleFilterChange}
+          />
+          <button type="submit" className="btn btn-primary">Search</button>
+        </form>
       </div>
 
       {loading ? (
         <div>Loading properties...</div>
-      ) : properties.length === 0 ? (
+      ) : (properties || []).length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
           No properties found matching your criteria.
         </div>
       ) : (
-        <div className="property-grid">
-          {properties.map(property => (
-            <PropertyCard 
-              key={property._id} 
-              property={property} 
-              onInterest={handleInterest}
-              interestStatus={interestedProperties[property._id]} 
-            />
+        <motion.div 
+          className="property-grid"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+          }}
+        >
+          {properties.map((property) => (
+            <motion.div
+              key={property._id}
+              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            >
+              <PropertyCard 
+                property={property} 
+                onInterest={handleInterest}
+                interestStatus={interestedProperties[property._id]} 
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

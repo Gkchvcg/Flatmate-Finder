@@ -5,6 +5,8 @@ import api from '../api/api';
 const CreateListing = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [generatingDesc, setGeneratingDesc] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -32,6 +34,29 @@ const CreateListing = () => {
     });
   };
 
+  const handleGenerateDescription = async () => {
+    if (!formData.title || !formData.city) {
+      alert("Please fill out Title and City first so the AI has some context!");
+      return;
+    }
+    setGeneratingDesc(true);
+    try {
+      const res = await api.post('/ai/property-description', {
+        title: formData.title,
+        city: formData.city,
+        type: formData.area || 'Apartment',
+        rent: formData.rent,
+        amenities: formData.amenities
+      });
+      setFormData(prev => ({ ...prev, description: res.data.description }));
+    } catch (err) {
+      // It errors out if API key is missing
+      alert(err.response?.data?.message || 'Failed to generate description. Ensure HF_TOKEN is set in backend .env');
+    } finally {
+      setGeneratingDesc(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -42,11 +67,41 @@ const CreateListing = () => {
       }
       
       await api.post('/properties', payload);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       alert(err.response?.data?.message || 'Failed to create listing');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const formatData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+        formatData.append('images', files[i]);
+    }
+
+    setUploadingImages(true);
+    try {
+        const res = await api.post('/upload', formatData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        
+        // Ensure URLs are absolute for immediate preview/storage. 
+        // We strip /api from baseURL if present.
+        const baseUrl = api.defaults.baseURL ? api.defaults.baseURL.replace('/api', '') : 'http://localhost:5001';
+        const absoluteUrls = res.data.urls.map(url => baseUrl + url);
+        
+        setFormData(prev => ({ ...prev, images: [...prev.images, ...absoluteUrls] }));
+    } catch (err) {
+        alert('Failed to upload images: ' + (err.response?.data?.message || err.message));
+    } finally {
+        setUploadingImages(false);
+        // Clear the file input
+        e.target.value = '';
     }
   };
 
@@ -92,8 +147,23 @@ const CreateListing = () => {
         </div>
 
         <div className="form-group">
-          <label>Description</label>
-          <textarea style={{resize:'vertical', minHeight:'100px'}} name="description" className="form-control" required value={formData.description} onChange={handleChange} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <label style={{ margin: 0 }}>Description</label>
+            <button 
+              type="button" 
+              onClick={handleGenerateDescription} 
+              disabled={generatingDesc}
+              style={{
+                background: 'linear-gradient(135deg, var(--primary-color), #7C3AED)',
+                color: 'white', border: 'none', borderRadius: '4px', padding: '0.25rem 0.75rem',
+                fontSize: '0.8rem', cursor: generatingDesc ? 'not-allowed' : 'pointer',
+                display: 'flex', alignItems: 'center', gap: '0.25rem'
+              }}
+            >
+              ✨ {generatingDesc ? 'Generating...' : 'AI Auto-Write'}
+            </button>
+          </div>
+          <textarea style={{resize:'vertical', minHeight:'100px'}} name="description" className="form-control" required value={formData.description} onChange={handleChange} placeholder="Describe your property or use the AI magic button to write it for you!" />
         </div>
 
         <div style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
@@ -151,26 +221,43 @@ const CreateListing = () => {
 
         <div style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
           <h3 style={{ marginBottom: '1rem', fontSize: '1.25rem' }}>Room Photos</h3>
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-            <input 
-              type="text" 
-              className="form-control" 
-              placeholder="Paste image URL here..." 
-              value={imageUrl} 
-              onChange={(e) => setImageUrl(e.target.value)} 
-            />
-            <button 
-              type="button" 
-              className="btn btn-outline" 
-              onClick={() => {
-                if (imageUrl) {
-                  setFormData({ ...formData, images: [...formData.images, imageUrl] });
-                  setImageUrl('');
-                }
-              }}
-            >
-              Add
-            </button>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <input 
+                type="text" 
+                className="form-control" 
+                placeholder="Paste image URL here..." 
+                value={imageUrl} 
+                onChange={(e) => setImageUrl(e.target.value)} 
+                style={{ flex: 1 }}
+              />
+              <button 
+                type="button" 
+                className="btn btn-outline" 
+                onClick={() => {
+                  if (imageUrl) {
+                    setFormData({ ...formData, images: [...formData.images, imageUrl] });
+                    setImageUrl('');
+                  }
+                }}
+              >
+                Add URL
+              </button>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: 'var(--glass-bg)', borderRadius: '0.5rem', border: '1px dashed var(--border-color)' }}>
+              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Or upload from device (max 5):</span>
+              <input 
+                type="file" 
+                multiple 
+                accept="image/*"
+                onChange={handleFileUpload}
+                disabled={uploadingImages}
+                style={{ fontSize: '0.9rem' }}
+              />
+              {uploadingImages && <span style={{ fontSize: '0.8rem', color: 'var(--primary-color)' }}>Uploading...</span>}
+            </div>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {formData.images.map((img, index) => (

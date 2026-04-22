@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Home, User as UserIcon, LogOut, PlusSquare, Sun, Moon } from 'lucide-react';
@@ -8,6 +8,7 @@ const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -27,6 +28,7 @@ const Navbar = () => {
               <Link to="/dashboard"><Home size={18} style={{ marginRight: '4px' }} /> Browse</Link>
               <Link to="/create-listing"><PlusSquare size={18} style={{ marginRight: '4px' }} /> Add Listing</Link>
               <Link to="/profile"><UserIcon size={18} style={{ marginRight: '4px' }} /> Profile</Link>
+              <Link to="/matches" className="btn btn-outline" style={{ marginLeft: '0.5rem' }}>Matches</Link>
               {
                 (location.pathname === '/profile' || location.pathname === '/dashboard') && <button
                   onClick={toggleTheme}

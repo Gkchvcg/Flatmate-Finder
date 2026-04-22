@@ -2,6 +2,7 @@ import React, { useRef, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext';
 import { Home, Users, Shield, Star, MapPin, Phone, Mail, ChevronDown, ArrowRight, Menu, X, Sun, Moon } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const LandingPage = () => {
   const homeRef = useRef(null);
@@ -71,24 +72,56 @@ const LandingPage = () => {
       {/* ── HERO ── */}
       <section id="home" ref={homeRef} className="lnd-hero">
         <div className="lnd-hero-bg" aria-hidden="true" />
-        <div className="lnd-hero-content">
-          <span className="lnd-pill">🏠 Find Your Perfect Flatmate</span>
-          <h1 className="lnd-hero-title">
+        <motion.div 
+          className="lnd-hero-content"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <motion.span 
+            className="lnd-pill"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            🏠 Find Your Perfect Flatmate
+          </motion.span>
+          <motion.h1 
+            className="lnd-hero-title"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
             Your Ideal Living <br />
             <span className="lnd-gradient-text">Situation Awaits</span>
-          </h1>
-          <p className="lnd-hero-sub">
+          </motion.h1>
+          <motion.p 
+            className="lnd-hero-sub"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+          >
             Connect with compatible flatmates, browse verified listings, and move into your perfect home — all in one place.
-          </p>
-          <div className="lnd-hero-cta">
+          </motion.p>
+          <motion.div 
+            className="lnd-hero-cta"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.6 }}
+          >
             <Link to="/register" className="lnd-btn lnd-btn-primary lnd-btn-lg">
               Get Started Free <ArrowRight size={18} />
             </Link>
             <button onClick={() => scrollTo(aboutRef)} className="lnd-btn lnd-btn-ghost lnd-btn-lg">
               Learn More <ChevronDown size={18} />
             </button>
-          </div>
-          <div className="lnd-hero-stats">
+          </motion.div>
+          <motion.div 
+            className="lnd-hero-stats"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.8 }}
+          >
             <div className="lnd-stat">
               <span className="lnd-stat-number">12k+</span>
               <span className="lnd-stat-label">Active Listings</span>
@@ -103,15 +136,24 @@ const LandingPage = () => {
               <span className="lnd-stat-number">50+</span>
               <span className="lnd-stat-label">Cities Covered</span>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ── FEATURES ── */}
       <section className="lnd-features">
-        <div className="lnd-section-inner">
-          <p className="lnd-section-eyebrow">Why Choose Us</p>
-          <h2 className="lnd-section-title">Everything you need to find your flatmate</h2>
+        <motion.div 
+          className="lnd-section-inner"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+          }}
+        >
+          <motion.p variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="lnd-section-eyebrow">Why Choose Us</motion.p>
+          <motion.h2 variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="lnd-section-title">Everything you need to find your flatmate</motion.h2>
           <div className="lnd-features-grid">
             {[
               {
@@ -135,20 +177,25 @@ const LandingPage = () => {
               {
                 icon: <Star size={28} />,
                 color: '#ec4899',
-                title: 'Interest System',
-                desc: 'Express interest in listings and let owners reach back out — no awkward cold calls needed.',
+                title: 'Interest & AI Matching',
+                desc: 'Use AI Compatibility checks and express interest smoothly — no awkward cold calls needed.',
               },
             ].map((f) => (
-              <div className="lnd-feature-card" key={f.title}>
+              <motion.div 
+                className="lnd-feature-card" 
+                key={f.title}
+                variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              >
                 <div className="lnd-feature-icon" style={{ background: f.color + '18', color: f.color }}>
                   {f.icon}
                 </div>
                 <h3>{f.title}</h3>
                 <p>{f.desc}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ── HOW IT WORKS ── */}
@@ -210,15 +257,29 @@ const LandingPage = () => {
       {/* ── TESTIMONIALS ── */}
       <section className="lnd-testimonials">
         <div className="lnd-section-inner">
-          <p className="lnd-section-eyebrow">What Users Say</p>
-          <h2 className="lnd-section-title">Loved by thousands of flatmates</h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+          >
+            <p className="lnd-section-eyebrow">What Users Say</p>
+            <h2 className="lnd-section-title">Loved by thousands of flatmates</h2>
+          </motion.div>
           <div className="lnd-testimonials-grid">
             {[
               { name: 'Priya S.', city: 'Bangalore', text: 'Found my flatmate within 3 days of posting! The preference filter is brilliant — I got someone who matched my exact lifestyle.', rating: 5 },
               { name: 'Rohan M.', city: 'Mumbai', text: 'As someone who was completely new to the city, this platform was a lifesaver. The listings are genuine and the process is smooth.', rating: 5 },
-              { name: 'Anjali K.', city: 'Delhi', text: 'Super easy UI and the interest system saves so much awkward back-and-forth. Highly recommended!', rating: 5 },
-            ].map((t) => (
-              <div className="lnd-testimonial" key={t.name}>
+              { name: 'Anjali K.', city: 'Delhi', text: 'Super easy UI and the AI compatibility scoring system is like magic. saves so much awkward back-and-forth.', rating: 5 },
+            ].map((t, idx) => (
+              <motion.div 
+                className="lnd-testimonial" 
+                key={t.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ delay: idx * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+              >
                 <div className="lnd-stars">{'★'.repeat(t.rating)}</div>
                 <p className="lnd-testimonial-text">"{t.text}"</p>
                 <div className="lnd-testimonial-author">
@@ -228,7 +289,60 @@ const LandingPage = () => {
                     <span>{t.city}</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── MEET THE TEAM ── */}
+      <section className="lnd-features" style={{ background: 'var(--bg-color)', borderTop: '1px solid var(--border-color)', borderBottom: '1px solid var(--border-color)' }}>
+        <div className="lnd-section-inner">
+          <motion.div
+             initial={{ opacity: 0, y: 20 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+          >
+            <p className="lnd-section-eyebrow">Creators</p>
+            <h2 className="lnd-section-title">Meet The Team</h2>
+            <p style={{ textAlign: 'center', color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto 3rem auto' }}>
+              We built Flatmate Finder to solve a problem we faced ourselves. Our mission is to make co-living accessible, safe, and truly community-driven.
+            </p>
+          </motion.div>
+
+          <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {[
+              {
+                name: 'Maroof Husain',
+                role: 'Creator & Engineer',
+                img: 'https://api.dicebear.com/7.x/notionists/svg?seed=Maroof&backgroundColor=6366f1'
+              },
+              {
+                name: 'Osheen Jain',
+                role: 'Creator & Engineer',
+                img: 'https://api.dicebear.com/7.x/notionists/svg?seed=Osheen&backgroundColor=ec4899'
+              }
+            ].map((member, idx) => (
+              <motion.div 
+                key={member.name}
+                className="lnd-feature-card"
+                style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '250px' }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.15 }}
+                whileHover={{ y: -5 }}
+              >
+                <div style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', marginBottom: '1rem', border: '3px solid var(--border-color)' }}>
+                  <img src={member.img} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+                <h3 style={{ margin: '0 0 0.25rem 0' }}>{member.name}</h3>
+                <p style={{ color: 'var(--primary-color)', fontWeight: '500', fontSize: '0.85rem', margin: 0 }}>{member.role}</p>
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                  <a href="#" style={{ color: 'var(--text-muted)', fontWeight: 'bold', textDecoration: 'none', fontSize: '0.9rem' }}>GitHub</a>
+                  <a href="#" style={{ color: 'var(--text-muted)', fontWeight: 'bold', textDecoration: 'none', fontSize: '0.9rem' }}>LinkedIn</a>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>

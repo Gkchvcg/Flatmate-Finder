@@ -7,7 +7,7 @@ import { calculateCompatibility } from '../utils/compatibility.js';
 // @access  Public
 const getProperties = async (req, res, next) => {
   try {
-    const { city, minRent, maxRent, amenities, page = 1, limit = 10 } = req.query;
+    const { city, minRent, maxRent, amenities, page = 1, limit = 10, title } = req.query;
 
 let query = {};
 query.active = true;

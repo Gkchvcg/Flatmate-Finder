@@ -1,4 +1,6 @@
 import Pair from '../models/Pair.js';
+import Interest from '../models/Interest.js';
+import Property from '../models/Property.js';
 
 // @desc Create pair from confirmed interest
 // @route POST /api/pairs
@@ -6,24 +8,19 @@ export const createPair = async (req, res, next) => {
   try {
     const { interestId } = req.body;
     const interest = await Interest.findById(interestId).populate('userId propertyId creator');
-    
     if (!interest || interest.status !== 'InterestedUserConfirmed') {
       return res.status(400).json({ message: 'Invalid interest for pairing' });
     }
-    
     const pair = await Pair.create({
       user1: interest.userId._id,
       user2: interest.propertyId.creator,
-      property: interest.propertyId._id
+      property: interest.propertyId._id,
     });
-    
     // Deactivate property
     await Property.findByIdAndUpdate(interest.propertyId._id, { active: false });
-    
     // Update interest status
     interest.status = 'MutualConfirmed';
     await interest.save();
-    
     res.status(201).json(pair);
   } catch (error) {
     next(error);
@@ -38,17 +35,14 @@ export const addReview = async (req, res, next) => {
     if (!pair) {
       return res.status(404).json({ message: 'Pair not found' });
     }
-    
     // Check if user is part of pair
     if (pair.user1.toString() !== req.user.id && pair.user2.toString() !== req.user.id) {
       return res.status(401).json({ message: 'Not authorized' });
     }
-    
     pair.reviews.push({
       user: req.user.id,
-      ...req.body
+      ...req.body,
     });
-    
     await pair.save();
     res.json(pair);
   } catch (error) {
@@ -56,8 +50,25 @@ export const addReview = async (req, res, next) => {
   }
 };
 
-export default {
-  createPair,
-  addReview
+// @desc Get all pairs for the logged-in user
+// @route GET /api/pairs/user
+export const getUserPairs = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const pairs = await Pair.find({
+      $or: [{ user1: userId }, { user2: userId }],
+    })
+      .populate('user1', 'name email')
+      .populate('user2', 'name email')
+      .populate('property', 'title city');
+    res.json(pairs);
+  } catch (error) {
+    next(error);
+  }
 };
 
+export default {
+  createPair,
+  addReview,
+  getUserPairs,
+};
