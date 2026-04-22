@@ -92,8 +92,8 @@ const LandingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            Your Ideal Living <br />
-            <span className="lnd-gradient-text">Situation Awaits</span>
+            Where Souls Align <br />
+            <span className="lnd-gradient-text">Under One Roof</span>
           </motion.h1>
           <motion.p 
             className="lnd-hero-sub"
