@@ -161,18 +161,6 @@ const LandingPage = () => {
               backdropFilter: 'blur(15px)',
               boxShadow: '0 25px 60px rgba(0,0,0,0.3)'
             }}>
-              <div style={{ 
-                position: 'absolute', 
-                top: 0, 
-                left: 0, 
-                width: '100%', 
-                height: '100%', 
-                backgroundImage: "url('/palestine-bg.png')", 
-                backgroundSize: 'cover', 
-                backgroundPosition: 'center', 
-                opacity: 0.25, 
-                zIndex: 0
-              }} />
               <h2 style={{ 
                 fontSize: '2.2rem', 
                 fontWeight: '500', 
@@ -396,6 +384,11 @@ const LandingPage = () => {
                 name: 'Osheen Jain',
                 role: 'Creator & Engineer',
                 img: 'https://api.dicebear.com/7.x/notionists/svg?seed=Osheen&backgroundColor=ec4899'
+              },
+              {
+                name: 'Md Altaf',
+                role: 'Creator & Product Manager',
+                img: 'https://api.dicebear.com/7.x/notionists/svg?seed=Altaf&backgroundColor=10b981'
               }
             ].map((member, idx) => (
               <motion.div 
