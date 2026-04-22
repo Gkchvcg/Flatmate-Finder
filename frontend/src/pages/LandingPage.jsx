@@ -84,7 +84,7 @@ const LandingPage = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            🏠 Find Your Perfect Flatmate
+            ✨ Your next flatmate might be the best plot twist of your life.
           </motion.span>
           <motion.h1 
             className="lnd-hero-title"
