@@ -166,11 +166,16 @@ export const verifyEmail = async (req, res, next) => {
   try {
     const { token } = req.params;
 
-    const user = await User.findOne({ verificationToken: token });
+    // Check if user exists by token
+    let user = await User.findOne({ verificationToken: token });
 
     if (!user) {
-      res.status(400);
-      throw new Error('Invalid or expired verification token');
+      // If no user found by token, check if it was already verified recently 
+      // (This happens if user clicks the link twice)
+      return res.status(400).json({ 
+        message: 'Invalid or expired verification token. If you just clicked this, you might already be verified! Try logging in.',
+        success: false 
+      });
     }
 
     user.isVerified = true;
