@@ -1,6 +1,7 @@
 import Interest from '../models/Interest.js';
 import Property from '../models/Property.js';
 import User from '../models/User.js';
+import Pair from '../models/Pair.js';
 import { calculateCompatibility } from '../utils/compatibility.js';
 
 // @desc    Show interest in a property
@@ -146,6 +147,20 @@ export const confirmInterest = async (req, res, next) => {
     }
     interest.status = 'InterestedUserConfirmed';
     await interest.save();
+
+    // Automatically create a Pair when the interested user confirms the mutual match
+    const existingPair = await Pair.findOne({ interest: interest._id });
+    if (!existingPair) {
+      await Pair.create({
+        user1: interest.userId,
+        user2: interest.propertyId.creator,
+        property: interest.propertyId._id,
+        interest: interest._id
+      });
+      // Deactivate property as it's now paired
+      await Property.findByIdAndUpdate(interest.propertyId._id, { active: false });
+    }
+
     res.status(200).json(interest);
   } catch (error) {
     next(error);

@@ -16,6 +16,10 @@ const pairSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Property',
     },
+    interest: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Interest',
+    },
     status: {
       type: String,
       enum: ['Confirmed', 'Matched', 'Completed'],

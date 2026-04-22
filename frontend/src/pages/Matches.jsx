@@ -55,7 +55,10 @@ const Matches = () => {
         transition={{ staggerChildren: 0.1 }}
       >
         {pairs.map((pair, index) => {
-          const partner = pair.user1._id === user._id ? pair.user2 : pair.user1;
+          const u1Id = pair.user1._id || pair.user1;
+          const currentUserId = user._id || user.id;
+          
+          const partner = u1Id.toString() === currentUserId.toString() ? pair.user2 : pair.user1;
           
           return (
             <motion.div 

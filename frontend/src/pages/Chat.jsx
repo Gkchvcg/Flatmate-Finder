@@ -50,11 +50,12 @@ const Chat = () => {
   useEffect(() => {
     const fetchIcebreakers = async () => {
       if (chat && chat.messages && chat.messages.length === 0 && chat.participants.length > 1) {
-        const otherUser = chat.participants.find(p => p !== user._id);
+        const currentUserId = (user._id || user.id).toString();
+        const otherUser = chat.participants.find(p => (p._id || p).toString() !== currentUserId);
         if(!otherUser) return;
         setLoadingIcebreakers(true);
         try {
-          const res = await api.get(`/ai/icebreakers?user1Id=${user._id}&user2Id=${otherUser}`);
+          const res = await api.get(`/ai/icebreakers?user1Id=${currentUserId}&user2Id=${(otherUser._id || otherUser)}`);
           setIcebreakers(res.data.icebreakers || []);
         } catch(err) {
           console.error('Failed to get icebreakers', err);
@@ -93,9 +94,9 @@ const Chat = () => {
     );
   }
 
-  const partnerId = chat?.participants?.find(p => (typeof p === 'string' ? p : p._id) !== user._id);
-  const partner = chat?.participants?.find(p => (typeof p === 'string' ? p : p._id) !== user._id);
-  const partnerName = (typeof partner === 'object' ? partner?.name : null) || chat?.messages?.find(m => m.sender._id !== user._id)?.sender?.name || "Chat Partner";
+  const currentUserId = (user._id || user.id).toString();
+  const partner = chat?.participants?.find(p => (p._id || p).toString() !== currentUserId);
+  const partnerName = (typeof partner === 'object' ? partner?.name : null) || chat?.messages?.find(m => (m.sender?._id || m.sender).toString() !== currentUserId)?.sender?.name || "Chat Partner";
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column', paddingTop: '1rem' }}>
@@ -134,7 +135,8 @@ const Chat = () => {
       >
         {chat && chat.messages && chat.messages.length > 0 ? (
           chat.messages.map((m) => {
-            const isMe = user && user._id === m.sender._id;
+            const mSenderId = (m.sender?._id || m.sender).toString();
+            const isMe = currentUserId === mSenderId;
             return (
               <div key={m._id} style={{ 
                 marginBottom: '1rem', 
