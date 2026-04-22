@@ -3,13 +3,29 @@ import nodemailer from 'nodemailer';
 const sendEmail = async (options) => {
   // For development, we can use Ethereal or just console log if not configured
   // In production, user should set these in .env
+  let auth = {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  };
+
+  let host = process.env.EMAIL_HOST || 'smtp.ethereal.email';
+  let port = process.env.EMAIL_PORT || 587;
+
+  // If no credentials, create a test account automatically
+  if (!auth.user || !auth.pass) {
+    const testAccount = await nodemailer.createTestAccount();
+    auth = {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    };
+    host = 'smtp.ethereal.email';
+    port = 587;
+  }
+
   const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.ethereal.email',
-    port: process.env.EMAIL_PORT || 587,
-    auth: {
-      user: process.env.EMAIL_USER || 'mock_user',
-      pass: process.env.EMAIL_PASS || 'mock_pass',
-    },
+    host,
+    port,
+    auth,
   });
 
   const mailOptions = {

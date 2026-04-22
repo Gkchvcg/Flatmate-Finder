@@ -67,6 +67,10 @@ export const registerUser = async (req, res, next) => {
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
       const verifyLink = `${frontendUrl}/verify-email/${verificationToken}`;
 
+      console.log('----------------------------------------------------');
+      console.log('VERIFICATION LINK:', verifyLink);
+      console.log('----------------------------------------------------');
+
       const message = `Welcome to Flatmate Finder, ${user.name}!\n\nPlease verify your email by clicking the link below:\n\n${verifyLink}\n\nIf you did not request this, please ignore this email.`;
       
       const html = `
