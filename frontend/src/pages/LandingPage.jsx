@@ -103,6 +103,7 @@ const LandingPage = () => {
           >
             Connect with compatible flatmates, browse verified listings, and move into your perfect home — all in one place.
           </motion.p>
+          
           <motion.div 
             className="lnd-hero-cta"
             initial={{ opacity: 0, y: 20 }}
@@ -115,12 +116,14 @@ const LandingPage = () => {
             <button onClick={() => scrollTo(aboutRef)} className="lnd-btn lnd-btn-ghost lnd-btn-lg">
               Learn More <ChevronDown size={18} />
             </button>
-            <motion.div 
+          </motion.div>
+
+          <motion.div 
             className="lnd-hero-stats"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.8 }}
-            style={{ marginBottom: '5rem' }}
+            style={{ marginBottom: '5rem', marginTop: '3rem' }}
           >
             <div className="lnd-stat">
               <span className="lnd-stat-number">2k+</span>
@@ -198,7 +201,7 @@ const LandingPage = () => {
               </p>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* Bottom Fade Transition */}
         <div style={{ 
