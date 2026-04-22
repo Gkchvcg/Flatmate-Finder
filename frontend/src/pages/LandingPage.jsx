@@ -141,7 +141,7 @@ const LandingPage = () => {
       </section>
       
       {/* ── QUOTE SECTION ── */}
-      <section className="lnd-quote-section" style={{ padding: '4rem 2rem', background: 'var(--bg-color)', textAlign: 'center' }}>
+      <section className="lnd-quote-section" style={{ padding: '6rem 2rem', background: 'transparent', textAlign: 'center' }}>
         <motion.div 
           className="lnd-section-inner"
           initial={{ opacity: 0, scale: 0.95 }}
@@ -150,12 +150,16 @@ const LandingPage = () => {
           transition={{ duration: 0.8 }}
         >
           <div className="glass-card" style={{ 
-            maxWidth: '800px', 
+            maxWidth: '900px', 
             margin: '0 auto', 
-            padding: '3rem', 
-            borderRadius: '2rem', 
+            padding: '4rem 3rem', 
+            borderRadius: '2.5rem', 
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.2)'
           }}>
             <div style={{ 
               position: 'absolute', 
@@ -166,7 +170,7 @@ const LandingPage = () => {
               backgroundImage: "url('/palestine-bg.png')", 
               backgroundSize: 'cover', 
               backgroundPosition: 'center', 
-              opacity: 0.15, 
+              opacity: 0.22, 
               zIndex: 0
             }} />
             <h2 style={{ 
