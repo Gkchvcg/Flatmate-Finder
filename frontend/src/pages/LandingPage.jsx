@@ -139,6 +139,47 @@ const LandingPage = () => {
           </motion.div>
         </motion.div>
       </section>
+      
+      {/* ── QUOTE SECTION ── */}
+      <section className="lnd-quote-section" style={{ padding: '4rem 2rem', background: 'var(--bg-color)', textAlign: 'center' }}>
+        <motion.div 
+          className="lnd-section-inner"
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="glass-card" style={{ 
+            maxWidth: '800px', 
+            margin: '0 auto', 
+            padding: '3rem', 
+            borderRadius: '2rem', 
+            position: 'relative'
+          }}>
+            <h2 style={{ 
+              fontSize: '2rem', 
+              fontWeight: '500', 
+              lineHeight: '1.4', 
+              color: 'var(--text-main)', 
+              fontStyle: 'italic',
+              position: 'relative',
+              zIndex: 1
+            }}>
+              "A house is made of bricks and beams. A home is made of the right people and shared dreams."
+            </h2>
+            <div style={{ 
+              marginTop: '1.5rem', 
+              height: '2px', 
+              width: '50px', 
+              background: 'var(--primary-color)', 
+              margin: '1.5rem auto' 
+            }} />
+            <p style={{ color: 'var(--text-muted)', fontWeight: '500', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.9rem' }}>
+              The Flatmate Finder Philosophy
+            </p>
+          </div>
+        </motion.div>
+      </section>
 
       {/* ── FEATURES ── */}
       <section className="lnd-features">
