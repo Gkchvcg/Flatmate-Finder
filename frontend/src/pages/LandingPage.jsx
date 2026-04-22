@@ -166,6 +166,10 @@ const LandingPage = () => {
               zIndex: 1
             }}>
               "A thief never becomes an owner"
+              <br />
+              <span style={{ fontSize: '1.5rem', display: 'block', marginTop: '1rem', opacity: 0.8 }}>
+                "Everyone is illegal on stolen land"
+              </span>
             </h2>
             <div style={{ 
               marginTop: '1.5rem', 
