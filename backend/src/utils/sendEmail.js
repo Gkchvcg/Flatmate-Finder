@@ -13,6 +13,12 @@ const sendEmail = async (options) => {
 
   // If no credentials, create a test account automatically
   if (!auth.user || !auth.pass) {
+    const isVercel = process.env.VERCEL === '1';
+    if (isVercel) {
+      console.log('Skipping Ethereal email creation on Vercel to avoid timeout.');
+      return { success: false, reason: 'skipped_no_credentials' };
+    }
+
     const testAccount = await nodemailer.createTestAccount();
     auth = {
       user: testAccount.user,
@@ -43,10 +49,12 @@ const sendEmail = async (options) => {
     if (transporter.options.host === 'smtp.ethereal.email') {
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     }
+    return { success: true };
   } catch (error) {
     console.error('Error sending email:', error);
     // Even if email fails in dev, don't crash the whole process, 
     // just log it so the dev knows they need to fix credentials.
+    return { success: false, error };
   }
 };
 

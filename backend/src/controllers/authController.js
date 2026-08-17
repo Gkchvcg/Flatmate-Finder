@@ -88,12 +88,27 @@ export const registerUser = async (req, res, next) => {
         </div>
       `;
 
-      await sendEmail({
+      const emailResult = await sendEmail({
         email: user.email,
         subject: 'Verify your email - Flatmate Finder',
         message,
         html,
       });
+
+      if (emailResult && emailResult.success === false && emailResult.reason === 'skipped_no_credentials') {
+        user.isVerified = true;
+        user.verificationToken = undefined;
+        await user.save();
+        
+        return res.status(201).json({
+          _id: user.id,
+          name: user.name,
+          email: user.email,
+          isVerified: user.isVerified,
+          token: generateToken(user._id),
+          message: 'Registration successful! (Email verification skipped on Vercel without credentials)'
+        });
+      }
 
       res.status(201).json({
         _id: user.id,
