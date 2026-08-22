@@ -64,7 +64,7 @@ export const registerUser = async (req, res, next) => {
       // Send verification email
       const verificationUrl = `${req.protocol}://${req.get('host')}/api/auth/verify/${verificationToken}`;
       // In production, this URL should probably point to the frontend verify page
-      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      const frontendUrl = process.env.FRONTEND_URL || req.get('origin') || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5173');
       const verifyLink = `${frontendUrl}/verify-email/${verificationToken}`;
 
       console.log('----------------------------------------------------');
@@ -115,6 +115,7 @@ export const registerUser = async (req, res, next) => {
         name: user.name,
         email: user.email,
         isVerified: user.isVerified,
+        verifyUrl: verifyLink,
         message: 'Registration successful! Please check your email to verify your account.'
       });
     } else {

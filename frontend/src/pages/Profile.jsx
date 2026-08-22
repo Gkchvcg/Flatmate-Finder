@@ -108,7 +108,7 @@ const Profile = () => {
             });
             setEditForm(prev => ({ ...prev, bio: res.data.bio }));
             toast.success("AI bio generated!");
-        } catch (err) {
+        } catch {
             toast.error("Failed to generate bio with AI");
         } finally {
             setGeneratingBio(false);

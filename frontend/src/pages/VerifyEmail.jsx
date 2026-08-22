@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import api from '../api/api';
-import { motion } from 'framer-motion';
 import { Mail, CheckCircle, XCircle, Loader2, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const VerifyEmail = () => {
     const { token } = useParams();
-    const navigate = useNavigate();
     const [status, setStatus] = useState('loading'); // loading, success, error
     const [message, setMessage] = useState('');
 

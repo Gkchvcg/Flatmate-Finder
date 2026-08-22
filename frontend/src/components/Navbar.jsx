@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Home, User as UserIcon, LogOut, PlusSquare, Sun, Moon } from 'lucide-react';
@@ -8,7 +8,6 @@ const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleLogout = () => {
     logout();

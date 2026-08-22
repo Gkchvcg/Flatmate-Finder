@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
 import { AuthContext } from '../context/AuthContext';
-import { motion } from 'framer-motion';
 import { MessageCircle, Home, User, Inbox } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Matches = () => {
   const { user } = useContext(AuthContext);

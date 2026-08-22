@@ -1,15 +1,13 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../api/api';
-import { AuthContext } from '../context/AuthContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [successUrl, setSuccessUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -61,6 +59,9 @@ const Register = () => {
     try {
       const response = await api.post('/auth/register', payload);
       setSuccess(response.data.message || 'Registration successful! Please check your email to verify your account.');
+      if (response.data.verifyUrl) {
+        setSuccessUrl(response.data.verifyUrl);
+      }
       setFormData({ name: '', email: '', password: '', phone: '' });
       // We don't call login() here because they need to verify email first
     } catch (err) {
@@ -75,9 +76,22 @@ const Register = () => {
       <h2 className="page-title" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Create an account</h2>
       {error && <div style={{ color: 'var(--danger)', marginBottom: '1rem', padding: '1rem', backgroundColor: '#FEF2F2', borderRadius: '8px', border: '1px solid #FCA5A5' }}>{error}</div>}
       {success && (
-        <div style={{ color: '#065F46', marginBottom: '1rem', padding: '1rem', backgroundColor: '#F0FDF4', borderRadius: '8px', border: '1px solid #34D399', textAlign: 'center' }}>
-          <p style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Check your email!</p>
-          <p style={{ fontSize: '0.9rem' }}>{success}</p>
+        <div style={{ color: '#065F46', marginBottom: '1.5rem', padding: '1rem', backgroundColor: '#F0FDF4', borderRadius: '8px', border: '1px solid #34D399', textAlign: 'center' }}>
+          <p style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Registration Successful!</p>
+          <p style={{ fontSize: '0.9rem', marginBottom: successUrl ? '1rem' : '0' }}>{success}</p>
+          {successUrl && (
+            <div style={{ marginTop: '1rem', padding: '0.8rem', backgroundColor: '#FFFFFF', borderRadius: '6px', border: '1px dashed #10B981', textAlign: 'center' }}>
+              <p style={{ fontSize: '0.85rem', color: '#4B5563', marginBottom: '0.75rem' }}>
+                <strong>Demo / Dev Mode:</strong> Real SMTP email sending is unconfigured. You can verify your account immediately:
+              </p>
+              <a
+                href={successUrl}
+                style={{ display: 'inline-block', padding: '0.6rem 1.2rem', backgroundColor: '#10B981', color: '#FFF', borderRadius: '6px', textDecoration: 'none', fontWeight: '600', fontSize: '0.9rem', boxShadow: '0 2px 4px rgba(16, 185, 129, 0.2)' }}
+              >
+                ✓ Click Here to Verify Your Email Instantly
+              </a>
+            </div>
+          )}
         </div>
       )}
       <form onSubmit={handleSubmit}>

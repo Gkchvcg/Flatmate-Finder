@@ -1,7 +1,19 @@
 import express from 'express';
 import cors from 'cors';
+import connectDB from './config/db.js';
 
 const app = express();
+
+// Ensure DB is connected before handling requests in serverless environments
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('Database connection error:', err);
+    res.status(500).json({ message: 'Database connection failed', error: err.message });
+  }
+});
 
 const defaultAllowed = [
   'http://localhost:5173',
@@ -56,7 +68,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Make the uploads folder publicly accessible
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+const uploadsPath = process.env.VERCEL ? path.join('/tmp', 'uploads') : path.join(__dirname, '../uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
